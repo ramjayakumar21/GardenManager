@@ -1,7 +1,6 @@
 
 # Garden Manager
 
-------------------------
 
 ## About
 

@@ -5,6 +5,7 @@ Represents plant and given attributes
 */
 public class Plant {
     private int daysSincePlanted;
+    private int daysSinceWatered;
     private String name;
     private String latinName;
     private int plantBed;
@@ -28,6 +29,10 @@ public class Plant {
     // else return isDry
     public void uproot() {
         // stub
+    }
+
+    public int getDaysSinceWatered() {
+        return daysSinceWatered;
     }
 
     public int getDaysSincePlanted() {

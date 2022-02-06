@@ -1,46 +1,80 @@
 package model;
 
+import java.util.ArrayList;
+
 /*
 Represents plant and given attributes
 */
 public class Plant {
-    private int daysSincePlanted;
-    private int daysSinceWatered;
     private String name;
-    private String latinName;
-    private int plantBed;
-    // 0 = unassigned/potted, 1 = Plant Bed 1, 2 = Plant Bed 2
+    private String lifeStage;
+    private String waterCycle;
+    private String plantType;
+    private Boolean isDry;
 
 
-    public Plant() {
-        // stub
+    //REQUIRES: waterCycle should be one of:
+    //              "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"
+    //          plantType should be one of:
+    //              "Perennial", "Biennial", "Cacti", "Bulb", "Shrub", "Fruit"
+    //          age should be one of:
+    //              "Seed", "Sprout", "Young", "Mature"
+    public Plant(String name, String waterCycle, String plantType, String lifeStage) {
+        this.name = name;
+        this.waterCycle = waterCycle;
+        this.plantType = plantType;
+        this.lifeStage = lifeStage;
+        isDry = true;
     }
 
     //MODIFIES: this
-    //EFFECTS: If isDry = true, change to false and return isDry
-    // else return isDry
-    public void water() {
-        // stub
+    //EFFECTS: changes isDry to false if true, returns true
+    // if isDry is false, do nothing and return false
+    public boolean water() {
+        if (isDry) {
+            isDry = false;
+            return true;
+        }
+        return false;
     }
 
-    //REQUIRES: plantBed = 0
-    //MODIFIES: this
-    //EFFECTS: If isDry = true, change to false and return isDry
-    // else return isDry
-    public void uproot() {
-        // stub
+    public String getName() {
+        return name;
     }
 
-    public int getDaysSinceWatered() {
-        return daysSinceWatered;
+    public String getLifeStage() {
+        return lifeStage;
     }
 
-    public int getDaysSincePlanted() {
-        return 0;
+    public String getWaterCycle() {
+        return waterCycle;
     }
 
-    public String getLatinName() {
-        return "";
+    public String getPlantType() {
+        return plantType;
     }
 
+    public Boolean getDry() {
+        return isDry;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setLifeStage(String lifeStage) {
+        this.lifeStage = lifeStage;
+    }
+
+    public void setWaterCycle(String waterCycle) {
+        this.waterCycle = waterCycle;
+    }
+
+    public void setPlantType(String plantType) {
+        this.plantType = plantType;
+    }
+
+    public void setDry(Boolean dry) {
+        isDry = dry;
+    }
 }

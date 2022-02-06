@@ -12,8 +12,8 @@ With this application, I can have a centralized space to record all the plants I
 
 ## User Stories
 
-- As a user, I want to be able to add new plants to my greenhouse/garden.
+- As a user, I want to be able to add new plants to my greenhouse/garden
 - As a user, I want to be able to inspect a plant to see information such as days since planted, watering schedule
-- As a user, I want to be able to view plants based on what plant bed they are located in.
-- As a user, I want to be able to view only plants from a given classification.
+- As a user, I want to be able to view all plants from a selected plant bed.
+- As a user, I want to be able to view only plants from a given classification (perennial, bulb)
 

@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlantBedTest {
-    PlantBed testBed;
-    ArrayList<Plant> listOfPlants;
+    private PlantBed testBed;
+    private ArrayList<Plant> listOfPlants;
+    private Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
+    private Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
 
 
     @BeforeEach
     public void runBefore() {
         listOfPlants = new ArrayList<>();
-        Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
-        Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
         listOfPlants.add(p1);
         listOfPlants.add(p2);
         testBed = new PlantBed("My Plant Bed", listOfPlants);
@@ -25,10 +25,8 @@ public class PlantBedTest {
     @Test
     public void constructorTest() {
         assertEquals("My Plant Bed", testBed.getName());
-        assertEquals(new Plant("Rose", "Weekly", "Bulb", "Mature"),
-                testBed.getPlants().get(0));
-        assertEquals(new Plant("Carrot", "Weekly", "Vegetable", "Young"),
-                testBed.getPlants().get(1));
+        assertEquals(p1,testBed.getPlants().get(0));
+        assertEquals(p2,testBed.getPlants().get(1));
         assertEquals(2, testBed.getPlants().size());
 
     }
@@ -46,8 +44,7 @@ public class PlantBedTest {
     public void uprootPlantTest() {
         testBed.uprootPlant(0);
         assertEquals(1,testBed.getPlants().size());
-        assertEquals(new Plant("Carrot", "Weekly", "Vegetable", "Young"),
-                testBed.getPlants().get(0));
+        assertEquals(p2,testBed.getPlants().get(0));
 
     }
 

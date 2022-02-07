@@ -6,41 +6,52 @@ import java.util.ArrayList;
 Class representing Garden with plant beds each with multiple plants
  */
 public class Garden {
-    private ArrayList<PlantBed> plantBeds;
+    private ArrayList<PlantBed> plantBedArrayList;
 
     public Garden() {
-        plantBeds = new ArrayList<>();
+        plantBedArrayList = new ArrayList<>();
         PlantBed p = new PlantBed("Bed 1");
     }
 
     public Garden(ArrayList<PlantBed> pb) {
-        plantBeds = pb;
+        plantBedArrayList = pb;
     }
 
+    //EFFECTS: adds given PlantBed p to plantBedArrayList
     public void addPlantBed(PlantBed p) {
-        return;
+        plantBedArrayList.add(p);
     }
 
-    //REQUIRES: option should be in range [0, number of plantBeds - 1]
+    //REQUIRES: i should be in range [0, number of plantBeds - 1]
     //EFFECT: selects plantBed to modify
-    public PlantBed selectPlantBed(int option) {
-        return new PlantBed();
+    public PlantBed selectPlantBed(int i) {
+        return plantBedArrayList.get(i);
     }
 
-    //EFFECT: if plant bed with name pb exists, removes it and returns true
+    //EFFECT: if plant bed with index i exists, removes it and returns true
     //        else return false
-    public boolean removePlantBed(String pb) {
+    public boolean removePlantBed(int i) {
+        if (i >= 0 && i <= (plantBedArrayList.size() - 1)) {
+            plantBedArrayList.remove(i);
+            return true;
+        }
         return false;
     }
 
-    public ArrayList<PlantBed> getPlantBeds() {
-        return plantBeds;
+    public ArrayList<PlantBed> getPlantBedArrayList() {
+        return plantBedArrayList;
     }
 
 
     //EFFECTS: returns total number of plants in garden
     public int getNumOfPlants() {
-        return 0;
+        int total = 0;
+        for (PlantBed pb: plantBedArrayList) {
+            for (Plant p: pb.getPlants()) {
+                total += 1;
+            }
+        }
+        return total;
     }
 
 }

@@ -5,12 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GardenTest {
     Garden testGarden;
     PlantBed bed1;
 
+    //TODO: Fix tests to work better
     @BeforeEach
     public void runBefore() {
         Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
@@ -48,6 +49,13 @@ public class GardenTest {
     @Test
     public void selectPlantBedTest() {
         assertEquals(bed1,testGarden.selectPlantBed(0));
+    }
+
+    @Test
+    public void removePlantBedTest() {
+        assertTrue(testGarden.removePlantBed(1));
+        assertEquals(1,testGarden.getPlantBedArrayList().size());
+        assertFalse(testGarden.removePlantBed(1));
     }
 
 }

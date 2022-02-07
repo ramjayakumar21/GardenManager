@@ -8,10 +8,6 @@ Class representing Garden with plant beds each with multiple plants
 public class Garden {
     private ArrayList<PlantBed> plantBedArrayList;
 
-    public Garden() {
-        plantBedArrayList = new ArrayList<>();
-        PlantBed p = new PlantBed("Bed 1");
-    }
 
     public Garden(ArrayList<PlantBed> pb) {
         plantBedArrayList = pb;

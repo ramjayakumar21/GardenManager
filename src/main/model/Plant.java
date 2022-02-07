@@ -57,24 +57,4 @@ public class Plant {
     public Boolean getDry() {
         return isDry;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setLifeStage(String lifeStage) {
-        this.lifeStage = lifeStage;
-    }
-
-    public void setWaterCycle(String waterCycle) {
-        this.waterCycle = waterCycle;
-    }
-
-    public void setPlantType(String plantType) {
-        this.plantType = plantType;
-    }
-
-    public void setDry(Boolean dry) {
-        isDry = dry;
-    }
 }

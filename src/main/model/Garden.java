@@ -50,4 +50,14 @@ public class Garden {
         return total;
     }
 
+    //TODO: ADD tests for this
+    //EFFECTS: returns total number of plant beds in garden
+    public int getNumOfPlantBeds() {
+        int total = 0;
+        for (PlantBed pb: plantBedArrayList) {
+            total += 1;
+        }
+        return total;
+    }
+
 }

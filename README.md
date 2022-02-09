@@ -12,8 +12,8 @@ With this application, I can have a centralized space to record all the plants I
 
 ## User Stories
 
-- As a user, I want to be able to add new plants to my greenhouse/garden
-- As a user, I want to be able to inspect a plant to see information such as days since planted, watering schedule
+- As a user, I want to be able to add new plants and plant beds to my greenhouse/garden
+- As a user, I want to be able to inspect a plant to see information such as life stage, watering schedule, or plant type
 - As a user, I want to be able to view all plants from a selected plant bed.
-- As a user, I want to be able to view plants I need to water, and then have them all remotely watered
+- As a user, I want to be able to view plants I need to water, and then be able to know where they are to go water them.
 

@@ -16,7 +16,7 @@ public class Plant {
     //REQUIRES: waterCycle should be one of:
     //              "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"
     //          plantType should be one of:
-    //              "Perennial", "Biennial", "Cacti", "Bulb", "Shrub", "Fruit"
+    //              "Perennial", "Biennial", "Cacti", "Bulb", "Shrub", "Fruit", "Vegetable"
     //          age should be one of:
     //              "Seed", "Sprout", "Young", "Mature"
     public Plant(String name, String waterCycle, String plantType, String lifeStage) {

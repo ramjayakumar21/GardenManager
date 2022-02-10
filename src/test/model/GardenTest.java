@@ -11,7 +11,6 @@ public class GardenTest {
     Garden testGarden;
     PlantBed bed1;
 
-    //TODO: Fix tests to work better
     @BeforeEach
     public void runBefore() {
         Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
@@ -65,7 +64,8 @@ public class GardenTest {
         assertEquals(2,testGarden.getPlantBedArrayList().size());
         assertTrue(testGarden.removePlantBed(1));
         assertEquals(1,testGarden.getPlantBedArrayList().size());
-        assertFalse(testGarden.removePlantBed(2));
+        assertFalse(testGarden.removePlantBed(10));
+        assertFalse(testGarden.removePlantBed(-1));
     }
 
 }

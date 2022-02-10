@@ -53,6 +53,7 @@ public class PlantBedTest {
         assertEquals(p2,testBed.getPlantsList().get(0));
         assertEquals(p3,testBed.getPlantsList().get(1));
         assertFalse(testBed.uprootPlant(3));
+        assertFalse(testBed.uprootPlant(-1));
     }
 
     @Test
@@ -72,6 +73,7 @@ public class PlantBedTest {
         assertFalse(testBed.getPlantsList().get(2).getDry());
         assertFalse(testBed.waterPlant(2));
         assertFalse(testBed.waterPlant(5));
+        assertFalse(testBed.waterPlant(-3));
     }
 
 

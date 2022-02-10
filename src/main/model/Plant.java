@@ -1,17 +1,13 @@
 package model;
 
-import java.util.ArrayList;
 
-/*
-Represents plant and given attributes
-*/
+// represents plant and given attributes it can have
 public class Plant {
     private String name;
     private String lifeStage;
     private String waterCycle;
     private String plantType;
     private Boolean isDry;
-
 
     //REQUIRES: waterCycle should be one of:
     //              "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"
@@ -29,7 +25,7 @@ public class Plant {
 
     //MODIFIES: this
     //EFFECTS: changes isDry to false if true, returns true
-    // if isDry is false, do nothing and return false
+    //         if isDry is false, do nothing and return false
     public boolean water() {
         if (isDry) {
             isDry = false;

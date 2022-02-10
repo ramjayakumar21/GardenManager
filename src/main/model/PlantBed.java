@@ -1,26 +1,22 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 // class representing a plant bed with an arbitrary number of plants
 public class PlantBed {
     private String name;
-    private ArrayList<Plant> plants;
+    private ArrayList<Plant> plantsList;
 
-    public PlantBed(String name, ArrayList<Plant> plants) {
-        this.name = name;
-        this.plants = plants;
+    //EFFECTS: makes plant bed with name and list of plants p
+    public PlantBed(String n, ArrayList<Plant> p) {
+        this.name = n;
+        this.plantsList = p;
     }
 
+    //EFFECTS: makes plant bed with name and empty plants
     public PlantBed(String name) {
         this.name = name;
-        this.plants = new ArrayList<>();
-    }
-
-    public PlantBed() {
-        this.name = "Unnamed Plant Bed";
-        this.plants = new ArrayList<>();
+        this.plantsList = new ArrayList<>();
     }
 
     //REQUIRES: waterCycle should be one of:
@@ -30,51 +26,46 @@ public class PlantBed {
     //          age should be one of:
     //              "Seed", "Sprout", "Young", "Mature"
     //MODIFIES: this
-    //EFFECTS: calls plants constructor with given argument and adds it to plants
+    //EFFECTS: calls plants constructor with given argument and adds it to plants list
     public void addPlant(String name, String waterCycle, String plantType, String life) {
         Plant p = new Plant(name, waterCycle, plantType, life);
-        plants.add(p);
+        plantsList.add(p);
     }
 
+    //MODIFIES: this
+    //EFFECTS: adds given plant p to plant list
     public void addPlant(Plant p) {
-        plants.add(p);
+        plantsList.add(p);
     }
 
 
-    //MODIFIES: if plant with index n is in plants, check if isDry = true
-    //          if true, change to false and return true
-    //          if false or in all other cases, return false
+    //MODIFIES: this
+    //EFFECTS: if plant with index n is in plants, check if isDry = true
+    //              if true, change to false and return true
+    //         if false or in all other cases, return false
     public boolean waterPlant(int n) {
-        if (0 <= n && (plants.size() - 1) >= n) {
-            return plants.get(n).water();
+        if (0 <= n && (plantsList.size() - 1) >= n) {
+            return plantsList.get(n).water();
         }
         return false;
     }
 
-    //REQUIRES: plant with index n is in plants
-    //MODIFIES: if plant exists at index n, remove it and return true
-    //          else return false
+    //MODIFIES: this
+    //EFFECTS: if plant exists at index n, remove it and return true
+    //         else return false
     public boolean uprootPlant(int n) {
-        if (0 <= n && (plants.size() - 1) >= n) {
-            plants.remove(n);
+        if (0 <= n && (plantsList.size() - 1) >= n) {
+            plantsList.remove(n);
             return true;
         }
         return false;
     }
 
-    public ArrayList<Plant> getPlants() {
-        return plants;
+    public ArrayList<Plant> getPlantsList() {
+        return plantsList;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setPlants(ArrayList<Plant> plants) {
-        this.plants = plants;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

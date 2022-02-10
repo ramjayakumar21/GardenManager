@@ -2,62 +2,54 @@ package model;
 
 import java.util.ArrayList;
 
-/*
-Class representing Garden with plant beds each with multiple plants
- */
+// class representing a garden with plant beds, each with multiple plants
 public class Garden {
     private ArrayList<PlantBed> plantBedArrayList;
 
-
+    //EFFECTS: creates new garden with plant beds pb
     public Garden(ArrayList<PlantBed> pb) {
         plantBedArrayList = pb;
     }
 
+    //MODIFIES: this
     //EFFECTS: adds given PlantBed p to plantBedArrayList
     public void addPlantBed(PlantBed p) {
         plantBedArrayList.add(p);
     }
 
-    //REQUIRES: i should be in range [0, number of plantBeds - 1]
-    //EFFECT: selects plantBed to modify
-    public PlantBed selectPlantBed(int i) {
-        return plantBedArrayList.get(i);
+    //REQUIRES: x should be in range [0, number of plantBeds - 1]
+    //EFFECT: returns plant bed with index i in plant bed array list
+    public PlantBed getPlantBedIndex(int x) {
+        return plantBedArrayList.get(x);
     }
 
+    //MODIFIES: this
     //EFFECT: if plant bed with index i exists, removes it and returns true
     //        else return false
-    public boolean removePlantBed(int i) {
-        if (i >= 0 && i <= (plantBedArrayList.size() - 1)) {
-            plantBedArrayList.remove(i);
+    public boolean removePlantBed(int x) {
+        if (x >= 0 && x <= (plantBedArrayList.size() - 1)) {
+            plantBedArrayList.remove(x);
             return true;
         }
         return false;
     }
 
-    public ArrayList<PlantBed> getPlantBedArrayList() {
-        return plantBedArrayList;
-    }
-
-
     //EFFECTS: returns total number of plants in garden
     public int getNumOfPlants() {
         int total = 0;
         for (PlantBed pb: plantBedArrayList) {
-            for (Plant p: pb.getPlants()) {
-                total += 1;
-            }
+            total += pb.getPlantsList().size();
         }
         return total;
     }
 
-    //TODO: ADD tests for this
     //EFFECTS: returns total number of plant beds in garden
     public int getNumOfPlantBeds() {
-        int total = 0;
-        for (PlantBed pb: plantBedArrayList) {
-            total += 1;
-        }
-        return total;
+        return plantBedArrayList.size();
+    }
+
+    public ArrayList<PlantBed> getPlantBedArrayList() {
+        return plantBedArrayList;
     }
 
 }

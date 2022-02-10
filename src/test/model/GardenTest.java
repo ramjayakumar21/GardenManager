@@ -30,9 +30,9 @@ public class GardenTest {
 
     @Test
     public void constructorTest() {
-        assertEquals(2,testGarden.getPlantBedArrayList().get(0).getPlants().size());
+        assertEquals(2,testGarden.getPlantBedArrayList().get(0).getPlantsList().size());
         assertEquals("Bed 1",testGarden.getPlantBedArrayList().get(0).getName());
-        assertEquals(1,testGarden.getPlantBedArrayList().get(1).getPlants().size());
+        assertEquals(1,testGarden.getPlantBedArrayList().get(1).getPlantsList().size());
         assertEquals("Bed 2",testGarden.getPlantBedArrayList().get(1).getName());
     }
 
@@ -47,15 +47,25 @@ public class GardenTest {
     }
 
     @Test
+    public void getNumOfPlantBeds() {
+        assertEquals(3,testGarden.getNumOfPlants());
+    }
+
+    @Test
     public void selectPlantBedTest() {
-        assertEquals(bed1,testGarden.selectPlantBed(0));
+        assertEquals(bed1,testGarden.getPlantBedIndex(0));
     }
 
     @Test
     public void removePlantBedTest() {
+        PlantBed pb1 = new PlantBed("Fruit Plants");
+        testGarden.addPlantBed(pb1);
+        assertEquals(3,testGarden.getNumOfPlantBeds());
+        assertTrue(testGarden.removePlantBed(2));
+        assertEquals(2,testGarden.getPlantBedArrayList().size());
         assertTrue(testGarden.removePlantBed(1));
         assertEquals(1,testGarden.getPlantBedArrayList().size());
-        assertFalse(testGarden.removePlantBed(1));
+        assertFalse(testGarden.removePlantBed(2));
     }
 
 }

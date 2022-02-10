@@ -25,9 +25,9 @@ public class PlantBedTest {
     @Test
     public void constructorTest() {
         assertEquals("My Plant Bed", testBed.getName());
-        assertEquals(p1,testBed.getPlants().get(0));
-        assertEquals(p2,testBed.getPlants().get(1));
-        assertEquals(2, testBed.getPlants().size());
+        assertEquals(p1,testBed.getPlantsList().get(0));
+        assertEquals(p2,testBed.getPlantsList().get(1));
+        assertEquals(2, testBed.getPlantsList().size());
 
     }
 
@@ -36,22 +36,23 @@ public class PlantBedTest {
     public void addPlantTest() {
         Plant p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
         testBed.addPlant(p3);
-        assertEquals(3,testBed.getPlants().size());
-        assertEquals(p3, testBed.getPlants().get(2));
+        assertEquals(3,testBed.getPlantsList().size());
+        assertEquals(p3, testBed.getPlantsList().get(2));
     }
 
     @Test
     public void uprootPlantTest() {
-        testBed.uprootPlant(0);
-        assertEquals(1,testBed.getPlants().size());
-        assertEquals(p2,testBed.getPlants().get(0));
-
+        assertTrue(testBed.uprootPlant(0));
+        assertEquals(1,testBed.getPlantsList().size());
+        assertEquals(p2,testBed.getPlantsList().get(0));
+        assertFalse(testBed.uprootPlant(3));
     }
 
     @Test
     public void waterPlantTest() {
         assertTrue(testBed.waterPlant(1));
-        assertFalse(testBed.getPlants().get(1).getDry());
+        assertFalse(testBed.getPlantsList().get(1).getDry());
+        assertFalse(testBed.waterPlant(1));
     }
 
 

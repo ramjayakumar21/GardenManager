@@ -7,17 +7,19 @@ import model.PlantBed;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+// provides the console based ui for using the Garden Manager application
 public class GardenApp {
     private Garden myGarden;
     private Scanner input;
 
+    //EFFECTS: starts main menu method to start the ui
     public GardenApp() {
         mainMenu();
     }
 
+    //MODIFIES: myGarden
     //EFFECTS: shows main menu options and takes user input
-    private void mainMenu() {
+    public void mainMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
         startUp();
@@ -37,8 +39,9 @@ public class GardenApp {
         System.out.println("\nGoodbye!");
     }
 
+
     //EFFECTS: prints out all main menu options
-    private void mainMenuOptions() {
+    public void mainMenuOptions() {
         System.out.println("\nWhat would you like to do?");
         System.out.println("------MAIN MENU------");
         System.out.println("[a] - See statistics about your garden");
@@ -47,22 +50,8 @@ public class GardenApp {
         System.out.println("[q] - Quit the Program");
     }
 
-    //EFFECTS: initializes example data for manipulation
-    private void startUp() {
-        Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
-        Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
-        Plant p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
-        PlantBed bed1 = new PlantBed("Bed 1");
-        bed1.addPlant(p1);
-        bed1.addPlant(p2);
-        PlantBed bed2 = new PlantBed("Bed 2");
-        bed2.addPlant(p3);
-        ArrayList<PlantBed> testPlantBeds = new ArrayList<>();
-        testPlantBeds.add(bed1);
-        testPlantBeds.add(bed2);
-        myGarden = new Garden(testPlantBeds);
-    }
 
+    //MODIFIES: myGarden
     //EFFECTS: takes user input from main menu and executes corresponding method
     private void mainMenuCommands(String userInput) {
         if (userInput.equals("a")) {
@@ -76,6 +65,7 @@ public class GardenApp {
         }
     }
 
+    //MODIFIES: myGarden
     //EFFECTS: runs Water WayFinder, where plants that need to be watered
     //         are shown from each plant bed and can then be watered
     public void waterWayFinderMenu() {
@@ -84,10 +74,10 @@ public class GardenApp {
         System.out.println("----WATER WAY-FINDER---");
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
             System.out.println("\nFrom plant bed '" + pb.getName() + "':");
-            for (Plant p: pb.getPlantsList()) {
+            for (Plant p: pb.getPlantArrayList()) {
                 if (p.getDry()) {
                     System.out.println("Plant " + p.getName() + " needs water!");
-                    System.out.println("(enter any key after to go to next plant)");
+                    System.out.println("(enter any character to go to next plant)");
                     if (!input.next().isEmpty()) {
                         p.water();
                         System.out.println("-------------------");
@@ -99,7 +89,7 @@ public class GardenApp {
     }
 
     //EFFECTS: prints number of plants, plant beds, and dry plants in garden
-    private void statisticsMenu() {
+    public void statisticsMenu() {
         System.out.println("Garden Statistics ---------");
         int numOfBed = myGarden.getNumOfPlantBeds();
         System.out.println("\nThere are " + numOfBed + " plant bed(s).");
@@ -107,7 +97,7 @@ public class GardenApp {
         System.out.println("\nThere are " + numOfPlant + " plant(s).");
         int count = 0;
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
-            for (Plant p: pb.getPlantsList()) {
+            for (Plant p: pb.getPlantArrayList()) {
                 if (p.getDry()) {
                     count += 1;
                 }
@@ -116,8 +106,9 @@ public class GardenApp {
         System.out.println("\nThere are " + count + " plant(s) that need water!");
     }
 
+    //MODIFIES: myGarden
     //EFFECTS: shows garden menu options and takes user input
-    private void gardenMenu() {
+    public void gardenMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
 
@@ -144,7 +135,7 @@ public class GardenApp {
     }
 
     //EFFECTS: prints out all garden menu options
-    private void gardenMenuOptions() {
+    public void gardenMenuOptions() {
         System.out.println("\nWhat would you like to do?");
         System.out.println("[a] - Add a new plant bed");
         System.out.println("[b] - Remove a plant bed");
@@ -154,12 +145,12 @@ public class GardenApp {
 
     //MODIFIES: myGarden
     //EFFECTS: removes plant bed with index from user input
-    private void removePB() {
+    public void removePB() {
         input = new Scanner(System.in);
         String userInput;
 
         int count = 0;
-        System.out.println("Which plant bed would you like to remove?");
+        System.out.println("Which plant bed would you like to remove? (give index number)");
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
             System.out.println("[" + count + "]" + " - " + pb.getName());
             count++;
@@ -176,7 +167,7 @@ public class GardenApp {
 
     //MODIFIES: myGarden
     //EFFECTS: adds plant bed with index from user input
-    private void addPB() {
+    public void addPB() {
         input = new Scanner(System.in);
 
         System.out.println("What is the name of the new plant bed you wish to add?");
@@ -185,17 +176,18 @@ public class GardenApp {
         System.out.println("The plant bed '" + userInput + "' was added!");
     }
 
+    //MODIFIES: myGarden
     //EFFECTS: shows plant bed menu options and takes user input
-    private void plantBedMenu() {
+    public void plantBedMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
 
-        System.out.println("Which plant bed would you like to visit?");
+        System.out.println("Which plant bed would you like to visit? (give index number)");
         String userInput = input.next();
         PlantBed pb = myGarden.getPlantBedArrayList().get(Integer.parseInt(userInput));
 
         System.out.println("Plant Bed: " + pb.getName() + "\nPlants: ");
-        for (Plant p: pb.getPlantsList()) {
+        for (Plant p: pb.getPlantArrayList()) {
             System.out.println(p.getName());
         }
         while (activeProgram) {
@@ -211,7 +203,7 @@ public class GardenApp {
     }
 
     //EFFECTS: prints out all plant bed menu options
-    private void plantBedMenuOptions() {
+    public void plantBedMenuOptions() {
         System.out.println("\nWhat would you like to do?");
         System.out.println("[a] - View more info about a plant");
         System.out.println("[b] - Uproot a plant");
@@ -220,6 +212,7 @@ public class GardenApp {
         System.out.println("[q] - Quit to Garden Menu");
     }
 
+    //REQUIRES: string s should be one of "a", "b", "c", "d"
     //EFFECTS: takes user input from plant bed menu and executes corresponding method
     public void plantBedCommands(String s, PlantBed pb) {
         if (s.equals("a")) {
@@ -247,7 +240,7 @@ public class GardenApp {
                 activeProgram = false;
             } else {
                 int index = Integer.parseInt(userInput);
-                Plant p = pb.getPlantsList().get(index);
+                Plant p = pb.getPlantArrayList().get(index);
                 System.out.println("--------------------");
                 System.out.println("Name: " + p.getName());
                 System.out.println("Type: " + p.getPlantType());
@@ -266,7 +259,7 @@ public class GardenApp {
     public void showPlant(PlantBed pb) {
         int count = 0;
         System.out.println("Which plant would you like to see more info about?");
-        for (Plant p : pb.getPlantsList()) {
+        for (Plant p : pb.getPlantArrayList()) {
             System.out.println("[" + count + "]" + " - " + p.getName());
             count++;
         }
@@ -275,13 +268,13 @@ public class GardenApp {
 
     //MODIFIES: pb
     //EFFECTS: waters plant in plant bed with index at user input
-    private void waterPlant(PlantBed pb) {
+    public void waterPlant(PlantBed pb) {
         input = new Scanner(System.in);
         String userInput;
         int count = 0;
 
         System.out.println("Which plant would you like to water?");
-        for (Plant p : pb.getPlantsList()) {
+        for (Plant p : pb.getPlantArrayList()) {
             System.out.println("[" + count + "]" + " - " + p.getName() + " (Dry = " + p.getDry() + ")");
             count++;
         }
@@ -297,13 +290,13 @@ public class GardenApp {
 
     //MODIFIES: pb
     //EFFECTS: removes plant with index from user input from plant bed pb
-    private void removePlant(PlantBed pb) {
+    public void removePlant(PlantBed pb) {
         input = new Scanner(System.in);
         String userInput;
         int count = 0;
 
         System.out.println("Which plant would you like to uproot?");
-        for (Plant p : pb.getPlantsList()) {
+        for (Plant p : pb.getPlantArrayList()) {
             System.out.println("[" + count + "]" + " - " + p.getName());
             count++;
         }
@@ -319,7 +312,7 @@ public class GardenApp {
 
     //MODIFIES: pb
     //EFFECTS: adds plant with user inputs to plant bed pb
-    private void addPlant(PlantBed pb) {
+    public void addPlant(PlantBed pb) {
         Scanner input = new Scanner(System.in);
         System.out.println("What is the name of the plant?");
         String name = input.nextLine();
@@ -334,6 +327,22 @@ public class GardenApp {
         String water = input.nextLine();
         pb.addPlant(new Plant(name,water,type,age));
         System.out.println("The plant '" + name + "' was added to the bed '" + pb.getName() + "'!");
+    }
+
+    //EFFECTS: initializes example garden data for manipulation
+    public void startUp() {
+        Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
+        Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
+        Plant p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
+        PlantBed bed1 = new PlantBed("Bed 1");
+        bed1.addPlant(p1);
+        bed1.addPlant(p2);
+        PlantBed bed2 = new PlantBed("Bed 2");
+        bed2.addPlant(p3);
+        ArrayList<PlantBed> testPlantBeds = new ArrayList<>();
+        testPlantBeds.add(bed1);
+        testPlantBeds.add(bed2);
+        myGarden = new Garden(testPlantBeds);
     }
 
 }

@@ -13,8 +13,9 @@ public class Plant {
     //              "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"
     //          plantType should be one of:
     //              "Perennial", "Biennial", "Cacti", "Bulb", "Shrub", "Fruit", "Vegetable"
-    //          age should be one of:
+    //          lifeStage should be one of:
     //              "Seed", "Sprout", "Young", "Mature"
+    //EFFECTS: creates new plant with name, waterCycle, plantType, lifeStage, and isDry as true
     public Plant(String name, String waterCycle, String plantType, String lifeStage) {
         this.name = name;
         this.waterCycle = waterCycle;

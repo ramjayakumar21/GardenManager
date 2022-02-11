@@ -11,16 +11,16 @@ public class Garden {
         plantBedArrayList = pb;
     }
 
-    //MODIFIES: this
-    //EFFECTS: adds given PlantBed p to plantBedArrayList
-    public void addPlantBed(PlantBed p) {
-        plantBedArrayList.add(p);
+    //REQUIRES: x should be in range [0, (# of plant beds - 1)]
+    //EFFECT: returns plant bed with index i in plant bed array list
+    public PlantBed getPlantBedByIndex(int x) {
+        return plantBedArrayList.get(x);
     }
 
-    //REQUIRES: x should be in range [0, number of plantBeds - 1]
-    //EFFECT: returns plant bed with index i in plant bed array list
-    public PlantBed getPlantBedIndex(int x) {
-        return plantBedArrayList.get(x);
+    //MODIFIES: this
+    //EFFECTS: adds given PlantBed p to plantBedArrayList
+    public void addPlantBed(PlantBed pb) {
+        plantBedArrayList.add(pb);
     }
 
     //MODIFIES: this
@@ -38,7 +38,7 @@ public class Garden {
     public int getNumOfPlants() {
         int total = 0;
         for (PlantBed pb: plantBedArrayList) {
-            total += pb.getPlantsList().size();
+            total += pb.getPlantArrayList().size();
         }
         return total;
     }

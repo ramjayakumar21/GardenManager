@@ -1,5 +1,6 @@
 package ui;
 
+
 import model.Garden;
 import model.Plant;
 import model.PlantBed;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 // provides the console based ui for using the Garden Manager application
+//       this class was made based of the TellerApp class from the TellerApp Project:
+//       https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class GardenApp {
     private Garden myGarden;
     private Scanner input;
@@ -226,7 +229,7 @@ public class GardenApp {
         }
     }
 
-    //EFFECTS: shows plant info of selected plant
+    //EFFECTS: shows plant info of selected plant from given plant bed
     public void viewPlant(PlantBed pb) {
         input = new Scanner(System.in);
         boolean activeProgram = true;
@@ -248,7 +251,7 @@ public class GardenApp {
                 System.out.println("Watering Frequency: " + p.getWaterCycle());
                 System.out.println("Needs Water?: " + p.getDry());
                 System.out.println("--------------------");
-                System.out.println("Check out another plant from above, or 'q' to quit.");
+                System.out.println("Check out another plant from above by giving their index, or 'q' to quit.");
             }
 
         }

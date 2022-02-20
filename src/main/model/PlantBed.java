@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
 // class representing a plant bed with an arbitrary number of plants
@@ -67,5 +69,9 @@ public class PlantBed {
 
     public String getName() {
         return name;
+    }
+
+    public JSONArray toJson() {
+        return new JSONArray();
     }
 }

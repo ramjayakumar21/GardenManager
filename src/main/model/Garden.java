@@ -1,9 +1,13 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.ArrayList;
 
 // class representing a garden with plant beds, each with multiple plants
-public class Garden {
+public class Garden implements Writable {
     private ArrayList<PlantBed> plantBedArrayList;
 
     //EFFECTS: creates new garden with plant beds pb
@@ -52,4 +56,20 @@ public class Garden {
         return plantBedArrayList;
     }
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("plantBedArrayList", plantBedsToJson());
+        return jsonObject;
+    }
+
+    private JSONArray plantBedsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (PlantBed pb : plantBedArrayList) {
+            jsonArray.put(pb.toJson());
+        }
+
+        return jsonArray;
+    }
 }

@@ -1,0 +1,23 @@
+{
+  "plantBedArrayList": [
+    {
+      "plantArrayList": [
+        {
+          "name": "Rose",
+          "lifeStage": "Mature",
+          "waterCycle": "Weekly",
+          "plantType": "Bulb",
+          "isDry": true
+        },
+        {
+          "name": "Carrot",
+          "lifeStage": "Young",
+          "waterCycle": "Weekly",
+          "plantType": "Vegetable",
+          "isDry": false
+        }
+      ],
+      "name":"Plant Bed 1"
+    }
+  ]
+}

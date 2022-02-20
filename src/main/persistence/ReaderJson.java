@@ -15,17 +15,17 @@ import java.util.stream.Stream;
 
 // class for reading JSON file and retrieving data from it
 public class ReaderJson {
-    private String sourceDir;
+    private String sourcePath;
 
     //EFFECTS: creates new ReaderJson object with given string as input
-    public ReaderJson(String sourceDir) {
-        this.sourceDir = sourceDir;
+    public ReaderJson(String sourcePath) {
+        this.sourcePath = sourcePath;
     }
 
     //EFFECTS: reads source string from instance and produces Garden object
     //         throws IOException if there is an error while reading the files
     public Garden readSource() throws IOException {
-        String jsonData = readString(sourceDir);
+        String jsonData = readString(sourcePath);
         return parseGarden(new JSONObject(jsonData));
 
 
@@ -78,7 +78,7 @@ public class ReaderJson {
         String waterCycle = nextPlant.getString("waterCycle");
         String plantType = nextPlant.getString("plantType");
         Boolean isDry = nextPlant.getBoolean("isDry");
-        Plant p = new Plant(name,waterCycle, lifeStage, plantType);
+        Plant p = new Plant(name,waterCycle,plantType,lifeStage);
         p.setDry(isDry);
         pb.addPlant(p);
     }

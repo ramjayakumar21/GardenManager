@@ -109,7 +109,7 @@ public class GardenApp {
         System.out.println("\nThere are " + count + " plant(s) that need water!");
     }
 
-    //MODIFIES: myGarden
+    //MODIFIES: myGarden, this
     //EFFECTS: shows garden menu options and takes user input
     public void gardenMenu() {
         boolean activeProgram = true;
@@ -146,7 +146,7 @@ public class GardenApp {
         System.out.println("[q] - Quit to Main Menu");
     }
 
-    //MODIFIES: myGarden
+    //MODIFIES: myGarden, this
     //EFFECTS: removes plant bed with index from user input
     public void removePB() {
         input = new Scanner(System.in);
@@ -168,7 +168,7 @@ public class GardenApp {
         }
     }
 
-    //MODIFIES: myGarden
+    //MODIFIES: myGarden, this
     //EFFECTS: adds plant bed with index from user input
     public void addPB() {
         input = new Scanner(System.in);
@@ -179,7 +179,7 @@ public class GardenApp {
         System.out.println("The plant bed '" + userInput + "' was added!");
     }
 
-    //MODIFIES: myGarden
+    //MODIFIES: myGarden, this
     //EFFECTS: shows plant bed menu options and takes user input
     public void plantBedMenu() {
         boolean activeProgram = true;
@@ -229,6 +229,7 @@ public class GardenApp {
         }
     }
 
+    //MODIFIES: this, pb
     //EFFECTS: shows plant info of selected plant from given plant bed
     public void viewPlant(PlantBed pb) {
         input = new Scanner(System.in);
@@ -269,7 +270,7 @@ public class GardenApp {
         System.out.println("Enter 'q' to go back to the plant bed menu");
     }
 
-    //MODIFIES: pb
+    //MODIFIES: this, pb
     //EFFECTS: waters plant in plant bed with index at user input
     public void waterPlant(PlantBed pb) {
         input = new Scanner(System.in);
@@ -291,7 +292,7 @@ public class GardenApp {
         }
     }
 
-    //MODIFIES: pb
+    //MODIFIES: this, pb
     //EFFECTS: removes plant with index from user input from plant bed pb
     public void removePlant(PlantBed pb) {
         input = new Scanner(System.in);
@@ -332,6 +333,7 @@ public class GardenApp {
         System.out.println("The plant '" + name + "' was added to the bed '" + pb.getName() + "'!");
     }
 
+    //MODIFIES: this
     //EFFECTS: initializes example garden data for manipulation
     public void startUp() {
         Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");

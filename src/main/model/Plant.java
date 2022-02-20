@@ -54,4 +54,8 @@ public class Plant {
     public Boolean getDry() {
         return isDry;
     }
+
+    public void setDry(Boolean b) {
+        this.isDry = b;
+    }
 }

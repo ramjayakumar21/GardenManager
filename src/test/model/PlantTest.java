@@ -28,6 +28,8 @@ class PlantTest {
         assertFalse(p.getDry());
         p.water();
         assertFalse(p.getDry());
+        p.setDry(true);
+        assertTrue(p.getDry());
     }
 
 

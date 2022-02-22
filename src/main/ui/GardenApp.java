@@ -4,7 +4,11 @@ package ui;
 import model.Garden;
 import model.Plant;
 import model.PlantBed;
+import persistence.ReaderJson;
+import persistence.WriterJson;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,6 +18,7 @@ import java.util.Scanner;
 public class GardenApp {
     private Garden myGarden;
     private Scanner input;
+    private static final String SOURCE_JSON = "./data/garden.json";
 
     //EFFECTS: starts main menu method to start the ui
     public GardenApp() {
@@ -50,21 +55,73 @@ public class GardenApp {
         System.out.println("[a] - See statistics about your garden");
         System.out.println("[b] - View/Modify a plant bed");
         System.out.println("[c] - Watering Way-finder");
+        System.out.println("[d] - Save/Retrieve from previous version");
         System.out.println("[q] - Quit the Program");
     }
 
 
     //MODIFIES: myGarden
     //EFFECTS: takes user input from main menu and executes corresponding method
-    private void mainMenuCommands(String userInput) {
+    public void mainMenuCommands(String userInput) {
         if (userInput.equals("a")) {
             statisticsMenu();
         } else if (userInput.equals("b")) {
             gardenMenu();
         } else if (userInput.equals("c")) {
             waterWayFinderMenu();
+        } else if (userInput.equals("d")) {
+            saveAndRetrieveMenu();
         } else {
             System.out.println("Unrecognized command, please try again.");
+        }
+    }
+
+    //MODIFIES: myGarden
+    //EFFECTS: takes user input and allows them to either save or retrieve garden
+    public void saveAndRetrieveMenu() {
+        boolean activeProgram = true;
+        input = new Scanner(System.in);
+
+        while (activeProgram) {
+            System.out.println("\n------SAVE/RETRIEVE MENU------");
+            System.out.println("[a] - Save garden in it's current state");
+            System.out.println("[b] - Retrieve garden from it's last saved state");
+            System.out.println("[q] - Quit the Save/Retrieve Menu");
+            String userInput = input.next();
+
+            if (userInput.equals("a")) {
+                saveGarden();
+            } else if (userInput.equals("b")) {
+                retrieveGarden();
+            } else if (userInput.equals("q")) {
+                activeProgram = false;
+            }
+        }
+
+    }
+
+    //MODIFIES: this
+    //EFFECTS: retrieves garden from JSON file and replaces current garden with it
+    public void retrieveGarden() {
+        try {
+            ReaderJson reader = new ReaderJson(SOURCE_JSON);
+            myGarden = reader.readSource();
+            System.out.println("Loaded Garden from " + SOURCE_JSON + "!");
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + SOURCE_JSON);
+        }
+    }
+
+    //EFFECT: saves current garden to JSON file
+    public void saveGarden() {
+        try {
+            WriterJson writer = new WriterJson(SOURCE_JSON);
+            writer.open();
+            writer.writeToJson(myGarden);
+            writer.close();
+            System.out.println("Saved Garden to " + SOURCE_JSON + "!");
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + SOURCE_JSON);
         }
     }
 

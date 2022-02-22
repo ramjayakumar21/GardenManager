@@ -27,8 +27,6 @@ public class ReaderJson {
     public Garden readSource() throws IOException {
         String jsonData = readString(sourcePath);
         return parseGarden(new JSONObject(jsonData));
-
-
     }
 
     //EFFECTS: reads file as string and returns it

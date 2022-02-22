@@ -1,11 +1,13 @@
 package model;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
 
 // class representing a plant bed with an arbitrary number of plants
-public class PlantBed {
+public class PlantBed implements Writable {
     private String name;
     private ArrayList<Plant> plantArrayList;
 
@@ -71,7 +73,20 @@ public class PlantBed {
         return name;
     }
 
-    public JSONArray toJson() {
-        return new JSONArray();
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("plantArrayList", plantsToJson());
+        return jsonObject;
+    }
+
+    private JSONArray plantsToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Plant p: plantArrayList) {
+            jsonArray.put(p.toJson());
+        }
+
+        return jsonArray;
     }
 }

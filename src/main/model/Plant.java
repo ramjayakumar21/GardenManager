@@ -1,6 +1,9 @@
 package model;
 
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 // represents plant and given attributes it can have
 public class Plant {
     private String name;
@@ -57,5 +60,15 @@ public class Plant {
 
     public void setDry(Boolean b) {
         this.isDry = b;
+    }
+
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("lifeStage", lifeStage);
+        jsonObject.put("waterCycle", waterCycle);
+        jsonObject.put("plantType", plantType);
+        jsonObject.put("isDry", isDry);
+        return jsonObject;
     }
 }

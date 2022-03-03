@@ -65,14 +65,8 @@ public class PlantBed implements Writable {
         return false;
     }
 
-    public ArrayList<Plant> getPlantArrayList() {
-        return plantArrayList;
-    }
-
-    public String getName() {
-        return name;
-    }
-
+    //EFFECTS: converts plant bed into JSONObject and returns it
+    @Override
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
@@ -80,6 +74,8 @@ public class PlantBed implements Writable {
         return jsonObject;
     }
 
+    //EFFECTS: converts all plants in plantArrayList into JSONObjects,
+    //         then adds them to a JSONArray and returns the array
     private JSONArray plantsToJson() {
         JSONArray jsonArray = new JSONArray();
 
@@ -89,4 +85,16 @@ public class PlantBed implements Writable {
 
         return jsonArray;
     }
+
+    //EFFECTS: returns arraylist of plants in plant bed
+    public ArrayList<Plant> getPlantArrayList() {
+        return plantArrayList;
+    }
+
+    //EFFECTS: returns name of plant bed as string
+    public String getName() {
+        return name;
+    }
+
+
 }

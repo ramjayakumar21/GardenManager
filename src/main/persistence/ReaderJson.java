@@ -13,7 +13,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-// class for reading JSON file and retrieving data from it
+// represents a reader that reads a Garden object from JSON data in file
+//      uses methods from JsonSerializationDemo.JsonReader:
+//      https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class ReaderJson {
     private String sourcePath;
 
@@ -29,8 +31,8 @@ public class ReaderJson {
         return parseGarden(new JSONObject(jsonData));
     }
 
-    //TODO: CITE THIS
     //EFFECTS: reads file as string and returns it
+    //copied from JsonSerializationDemo
     public String readString(String str) throws IOException {
         StringBuilder sourceBuilder = new StringBuilder();
 
@@ -44,13 +46,13 @@ public class ReaderJson {
     //EFFECTS: converts given JSONObject into Garden object
     public Garden parseGarden(JSONObject jsonObj) {
         Garden g = new Garden(new ArrayList<>());
-        addPlantBeds(g, jsonObj);
+        addGardenFields(g, jsonObj);
         return g;
     }
 
     //MODIFIES: g
-    //EFFECTS: adds plant beds from jsonObj to g
-    public void addPlantBeds(Garden g, JSONObject jsonObj) {
+    //EFFECTS: parses plant beds and plants from given jsonObj and adds to given garden
+    public void addGardenFields(Garden g, JSONObject jsonObj) {
         JSONArray jsonArray = jsonObj.getJSONArray("plantBedArrayList");
         for (Object objJson : jsonArray) {
             JSONObject nextPlantBed = (JSONObject) objJson;
@@ -59,7 +61,7 @@ public class ReaderJson {
     }
 
     //MODIFIES: g
-    //EFFECTS: adds given json object as new plant bed with plants to g
+    //EFFECTS: parses plant bed from nextPlantBed and adds it to given garden
     public void addPlantBed(Garden g, JSONObject nextPlantBed) {
         String name = nextPlantBed.getString("name");
         PlantBed pb = new PlantBed(name);
@@ -71,6 +73,8 @@ public class ReaderJson {
         g.addPlantBed(pb);
     }
 
+    //MODIFIES: pb
+    //EFFECTS: parses plant from nextPlant and adds it to given plant bed
     public void addPlant(PlantBed pb, JSONObject nextPlant) {
         String name = nextPlant.getString("name");
         String lifeStage = nextPlant.getString("lifeStage");

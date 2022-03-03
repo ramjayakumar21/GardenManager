@@ -2,9 +2,10 @@ package model;
 
 
 import org.json.JSONObject;
+import persistence.Writable;
 
 // represents plant and given attributes it can have
-public class Plant {
+public class Plant implements Writable {
     private String name;
     private String lifeStage;
     private String waterCycle;
@@ -37,30 +38,37 @@ public class Plant {
         return false;
     }
 
+    //EFFECTS: returns plant name as string
     public String getName() {
         return name;
     }
 
+    //EFFECTS: returns plant life stage as string
     public String getLifeStage() {
         return lifeStage;
     }
 
+    //EFFECTS: returns plant watering cycle as string
     public String getWaterCycle() {
         return waterCycle;
     }
 
+    //EFFECTS: returns plant type as string
     public String getPlantType() {
         return plantType;
     }
 
+    //EFFECTS: returns true if plant is dry, false if it isn't
     public Boolean getDry() {
         return isDry;
     }
 
+    //EFFECTS: sets isDry to b
     public void setDry(Boolean b) {
         this.isDry = b;
     }
 
+    //EFFECTS: converts plant into JSONObject and returns it
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);

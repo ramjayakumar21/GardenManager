@@ -52,10 +52,12 @@ public class Garden implements Writable {
         return plantBedArrayList.size();
     }
 
+    //EFFECTS: returns array of plant beds in garden
     public ArrayList<PlantBed> getPlantBedArrayList() {
         return plantBedArrayList;
     }
 
+    //EFFECTS: converts garden into JSONObject and returns it
     @Override
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
@@ -63,6 +65,8 @@ public class Garden implements Writable {
         return jsonObject;
     }
 
+    //EFFECTS: converts all plant beds in plantArrayList into JSONObjects,
+    //         then adds them to a JSONArray and returns the array
     private JSONArray plantBedsToJson() {
         JSONArray jsonArray = new JSONArray();
 

@@ -17,6 +17,7 @@ With this application, I could have a centralized space to record all the plants
 - As a user, I want to be able to inspect a plant to see information such as life stage, watering schedule, or plant type
 - As a user, I want to be able to see statistics of my garden, such as total plants and number of plants that need water.
 - As a user, I want to be able to view plants I need to water, and then be able to know where they are to go water them.
-- As a user, I want to be able to save the state of my garden with all its plant beds and plants
-- As a user, I want to be able to load a save of my garden to go back to an older state 
+- As a user, I want to be able to save the state of my garden with all its plant beds and plants.
+- As a user, I want to be able to load a save of my garden to go back to an older state. 
+- As a user, I want changes to my garden to be persisted even after I close the program
 

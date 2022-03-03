@@ -43,7 +43,7 @@ public class GardenTest {
     }
 
     @Test
-    public void getNumOfPlantBeds() {
+    public void getNumOfPlantBedsTest() {
         assertEquals(3,testGarden.getNumOfPlants());
         assertTrue(testGarden.getPlantBedByIndex(0).uprootPlant(0));
         assertEquals(2,testGarden.getNumOfPlants());

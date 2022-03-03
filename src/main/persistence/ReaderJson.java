@@ -29,6 +29,7 @@ public class ReaderJson {
         return parseGarden(new JSONObject(jsonData));
     }
 
+    //TODO: CITE THIS
     //EFFECTS: reads file as string and returns it
     public String readString(String str) throws IOException {
         StringBuilder sourceBuilder = new StringBuilder();

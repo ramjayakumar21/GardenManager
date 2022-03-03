@@ -1,7 +1,6 @@
 package model;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 // represents plant and given attributes it can have

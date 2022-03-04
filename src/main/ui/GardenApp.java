@@ -7,7 +7,6 @@ import model.PlantBed;
 import persistence.ReaderJson;
 import persistence.WriterJson;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -24,21 +23,16 @@ public class GardenApp {
 
     //EFFECTS: starts main menu method to start the ui
     public GardenApp() {
-
-        try {
-            mainMenu();
-        } catch (IOException e) {
-            System.out.println();
-        }
+        mainMenu();
     }
 
     //MODIFIES: myGarden
     //EFFECTS: shows main menu options and takes user input
-    public void mainMenu() throws IOException {
+    public void mainMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
         System.out.println("\nRetrieving Garden from last saved state...");
-        retrieveGarden();
+        loadStartUp();
 
         System.out.println("----Welcome to Garden Manager!---- ");
         while (activeProgram) {
@@ -62,6 +56,21 @@ public class GardenApp {
         System.out.println("\nGoodbye!");
     }
 
+    //MODIFIES: this
+    //EFFECTS: reads from SOURCE_JSON on startup and initializes garden
+    //         if unable to do so call with demo data instead
+    public void loadStartUp() {
+        try {
+            readerJson = new ReaderJson(SOURCE_JSON);
+            myGarden = readerJson.readSource();
+            System.out.println("Loaded Garden from " + SOURCE_JSON + "!");
+        } catch (IOException e) {
+            System.out.println("Unable to retrieve saved data from "  + SOURCE_JSON);
+            System.out.println("Using demo data...");
+            startUp();
+        }
+    }
+
 
     //EFFECTS: prints out all main menu options
     public void mainMenuOptions() {
@@ -69,7 +78,7 @@ public class GardenApp {
         System.out.println("------MAIN MENU------");
         System.out.println("[a] - See statistics about your garden");
         System.out.println("[b] - View/Modify a plant bed");
-        System.out.println("[c] - Watering Way-finder");
+        System.out.println("[c] - Watering WayFinder");
         System.out.println("[d] - Save/Retrieve from previous version");
         System.out.println("[q] - Quit the Program");
     }
@@ -77,7 +86,7 @@ public class GardenApp {
 
     //MODIFIES: myGarden
     //EFFECTS: takes user input from main menu and executes corresponding method
-    public void mainMenuCommands(String userInput) throws IOException {
+    public void mainMenuCommands(String userInput)  {
         if (userInput.equals("a")) {
             statisticsMenu();
         } else if (userInput.equals("b")) {
@@ -93,15 +102,15 @@ public class GardenApp {
 
     //MODIFIES: myGarden
     //EFFECTS: takes user input and allows them to either save or retrieve garden
-    public void saveAndRetrieveMenu() throws IOException {
+    public void saveAndRetrieveMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
 
         while (activeProgram) {
             System.out.println("\n------SAVE/RETRIEVE MENU------");
-            System.out.println("[a] - Save garden in it's current state");
-            System.out.println("[b] - Retrieve garden from it's last saved state");
-            System.out.println("[q] - Quit the Save/Retrieve Menu");
+            System.out.println("[a] - Save garden in current state");
+            System.out.println("[b] - Retrieve garden from last saved state");
+            System.out.println("[q] - Quit the save/retrieve menu");
             String userInput = input.next();
 
             if (userInput.equals("a")) {
@@ -115,9 +124,10 @@ public class GardenApp {
 
     }
 
-    //MODIFIES: this
+    //MODIFIES: myGarden
     //EFFECTS: retrieves garden from JSON file and replaces current garden with it
-    public void retrieveGarden() throws IOException {
+    //         if unable to do so, print out message and do nothing
+    public void retrieveGarden() {
         try {
             readerJson = new ReaderJson(SOURCE_JSON);
             myGarden = readerJson.readSource();
@@ -127,13 +137,18 @@ public class GardenApp {
         }
     }
 
-    //EFFECT: saves current garden to JSON file
-    public void saveGarden() throws IOException {
-        writerJson = new WriterJson(SOURCE_JSON);
-        writerJson.open();
-        writerJson.writeToJson(myGarden);
-        writerJson.close();
-        System.out.println("Saved Garden to " + SOURCE_JSON + "!");
+    //EFFECT: saves current garden to JSON file at SOURCE_JSON
+    //        if unable to do so, print out message and do nothing
+    public void saveGarden() {
+        try {
+            writerJson = new WriterJson(SOURCE_JSON);
+            writerJson.open();
+            writerJson.writeToJson(myGarden);
+            writerJson.close();
+            System.out.println("Saved Garden to " + SOURCE_JSON + "!");
+        } catch (IOException e) {
+            System.out.println("Unable to save from file " + SOURCE_JSON);
+        }
     }
 
     //MODIFIES: myGarden

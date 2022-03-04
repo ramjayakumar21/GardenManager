@@ -69,11 +69,9 @@ public class Garden implements Writable {
     //         then adds them to a JSONArray and returns the array
     private JSONArray plantBedsToJson() {
         JSONArray jsonArray = new JSONArray();
-
         for (PlantBed pb : plantBedArrayList) {
             jsonArray.put(pb.toJson());
         }
-
         return jsonArray;
     }
 }

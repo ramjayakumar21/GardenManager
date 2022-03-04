@@ -31,7 +31,6 @@ public class GardenApp {
     public void mainMenu() {
         boolean activeProgram = true;
         input = new Scanner(System.in);
-        System.out.println("\nRetrieving Garden from last saved state...");
         loadStartUp();
 
         System.out.println("----Welcome to Garden Manager!---- ");
@@ -60,6 +59,7 @@ public class GardenApp {
     //EFFECTS: reads from SOURCE_JSON on startup and initializes garden
     //         if unable to do so call with demo data instead
     public void loadStartUp() {
+        System.out.println("\nRetrieving Garden from last saved state...");
         try {
             readerJson = new ReaderJson(SOURCE_JSON);
             myGarden = readerJson.readSource();

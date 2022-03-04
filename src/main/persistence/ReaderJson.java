@@ -43,6 +43,7 @@ public class ReaderJson {
         return sourceBuilder.toString();
     }
 
+    //MODIFIES: g
     //EFFECTS: converts given JSONObject into Garden object
     public Garden parseGarden(JSONObject jsonObj) {
         Garden g = new Garden(new ArrayList<>());
@@ -60,7 +61,7 @@ public class ReaderJson {
         }
     }
 
-    //MODIFIES: g
+    //MODIFIES: g, pb
     //EFFECTS: parses plant bed from nextPlantBed and adds it to given garden
     public void addPlantBed(Garden g, JSONObject nextPlantBed) {
         String name = nextPlantBed.getString("name");

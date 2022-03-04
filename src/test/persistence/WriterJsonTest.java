@@ -45,7 +45,7 @@ public class WriterJsonTest {
             assertEquals(1,testGarden.getNumOfPlantBeds());
             assertEquals(0,testGarden.getPlantBedByIndex(0).getPlantArrayList().size());
         } catch (IOException e) {
-            fail("Exception should not have been thrown");
+            fail("Failed to write to file!");
         }
     }
 
@@ -85,7 +85,7 @@ public class WriterJsonTest {
             assertEquals(2,testGarden.getNumOfPlantBeds());
             assertEquals(2,testGarden.getNumOfPlants());
         } catch (IOException e) {
-            fail("Exception should not have been thrown");
+            fail("Failed to write to file!");
         }
     }
 }

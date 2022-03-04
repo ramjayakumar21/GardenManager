@@ -50,7 +50,7 @@ public class ReaderJsonTest {
             assertEquals("Vegetable",pb.getPlantArrayList().get(1).getPlantType());
             assertEquals(false,pb.getPlantArrayList().get(1).getDry());
         } catch (IOException e) {
-            fail("Failed to read from empty file!");
+            fail("Failed to read from file with data!");
         }
 
     }

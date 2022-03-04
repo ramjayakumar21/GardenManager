@@ -21,7 +21,7 @@ public class GardenApp {
     private WriterJson writerJson;
     private ReaderJson readerJson;
 
-    //EFFECTS: starts main menu method to start the ui
+    //EFFECTS: starts main  menu method to start the ui
     public GardenApp() {
         mainMenu();
     }

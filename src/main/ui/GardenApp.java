@@ -7,6 +7,10 @@ import model.PlantBed;
 import persistence.ReaderJson;
 import persistence.WriterJson;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,12 +18,16 @@ import java.util.Scanner;
 // provides the console based ui for using the Garden Manager application
 //       this class was made based of the TellerApp class from the TellerApp Project:
 //       https://github.students.cs.ubc.ca/CPSC210/TellerApp
-public class GardenApp {
+public class GardenApp extends JFrame {
     private Garden myGarden;
     private Scanner input;
     private static final String SOURCE_JSON = "./data/garden.json";
     private WriterJson writerJson;
     private ReaderJson readerJson;
+    private JFrame jf;
+    private int btnWidth = 200;
+    private int btnHeight = 50;
+    private int alignX = 400;
 
     //EFFECTS: starts main  menu method to start the ui
     public GardenApp() {
@@ -32,28 +40,96 @@ public class GardenApp {
         boolean activeProgram = true;
         input = new Scanner(System.in);
         loadStartUp();
+        initializeGUI();
+    }
 
-        System.out.println("----Welcome to Garden Manager!---- ");
-        while (activeProgram) {
-            mainMenuOptions();
-            String userInput = input.next();
-            userInput = userInput.toLowerCase();
+    public void initializeGUI() {
+        jf = new JFrame("Garden Manager");
 
-            if (userInput.equals("q")) {
-                System.out.println("Before you quit, would you like to SAVE? [Y/N]");
-                userInput = input.next();
-                userInput = userInput.toLowerCase();
-                if (userInput.equals("y")) {
-                    System.out.println("Saving your garden...");
-                    saveGarden();
+        viewPlantBedsUI();
+
+        viewGardenStats();
+
+        wateringUI();
+
+        saveAndLoadUI();
+
+        JButton quit = new JButton("Quit Program");
+        quit.setBounds(alignX, 300, btnWidth, btnHeight);
+        quit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveOnQuit();
+            }
+        });
+
+        jf.add(quit);
+        jf.setSize(700,500);
+        jf.setLayout(null);
+        jf.setVisible(true);//making the frame visible
+
+    }
+
+    public void saveOnQuit() {
+    }
+
+    public void viewPlantBedsUI() {
+        JButton b1 = new JButton("View/Modify Plant Beds");
+        b1.setBounds(alignX, 50, btnWidth, btnHeight);
+        b1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+        jf.add(b1);
+    }
+
+    public void viewGardenStats() {
+        JButton b2 = new JButton("View Garden Stats");
+        JDialog statsWindow = new JDialog(jf, "Garden Stats", true);
+        statsWindow.setLayout(new BorderLayout());
+        b2.setBounds(alignX, 100, btnWidth, btnHeight);
+        b2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statsWindow.setVisible(true);
+            }
+        });
+        String numDryPlants = generateDryPlants();
+        statsWindow.add(new JLabel(
+                "\nThere are " + myGarden.getNumOfPlantBeds() + " plant bed(s)."),BorderLayout.NORTH);
+        statsWindow.add(new JLabel(
+                "\nThere are " + myGarden.getNumOfPlants() + " plant(s)."),BorderLayout.CENTER);
+        statsWindow.add(new JLabel(numDryPlants),BorderLayout.SOUTH);
+        statsWindow.setSize(300,300);
+        jf.add(b2);
+    }
+
+    public String generateDryPlants() {
+        int count = 0;
+        for (PlantBed pb : myGarden.getPlantBedArrayList()) {
+            for (Plant p: pb.getPlantArrayList()) {
+                if (p.getDry()) {
+                    count += 1;
                 }
-                activeProgram = false;
-            } else {
-                mainMenuCommands(userInput);
             }
         }
-        System.out.println("\nGoodbye!");
+        return "\nThere are " + count + " plant(s) that need water!";
     }
+
+
+    private void saveAndLoadUI() {
+        JButton b4 = new JButton("Save/Load");
+        b4.setBounds(alignX, 150, btnWidth, btnHeight);
+        jf.add(b4);
+    }
+
+    private void wateringUI() {
+        JButton b3 = new JButton("Watering Way-Finder");
+        b3.setBounds(alignX, 200, btnWidth, btnHeight);
+        jf.add(b3);
+    }
+
 
     //MODIFIES: this
     //EFFECTS: reads from SOURCE_JSON on startup and initializes garden

@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static javafx.application.Platform.exit;
+
 // provides the console based ui for using the Garden Manager application
 //       this class was made based of the TellerApp class from the TellerApp Project:
 //       https://github.students.cs.ubc.ca/CPSC210/TellerApp
@@ -28,6 +30,8 @@ public class GardenApp extends JFrame {
     private int btnWidth = 200;
     private int btnHeight = 50;
     private int alignX = 400;
+    private JPanel mainPage;
+    private JPanel plantBedPage;
 
     //EFFECTS: starts main  menu method to start the ui
     public GardenApp() {
@@ -45,46 +49,84 @@ public class GardenApp extends JFrame {
 
     public void initializeGUI() {
         jf = new JFrame("Garden Manager");
+        jf.setLayout(new CardLayout());
 
-        viewPlantBedsUI();
+        initializeMainPage();
+        initializePanels();
 
-        viewGardenStats();
-
-        wateringUI();
-
-        saveAndLoadUI();
-
-        JButton quit = new JButton("Quit Program");
-        quit.setBounds(alignX, 300, btnWidth, btnHeight);
-        quit.addActionListener(new ActionListener() {
+        JButton quitButton = new JButton("Quit Program");
+        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
+        quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                saveOnQuit();
+                exit();
             }
         });
+        mainPage.add(quitButton);
 
-        jf.add(quit);
         jf.setSize(700,500);
         jf.setLayout(null);
         jf.setVisible(true);//making the frame visible
+    }
 
+    private void initializePanels() {
+        makePlantBedPage();
+    }
+
+    private void makePlantBedPage() {
+        plantBedPage = new JPanel();
+        plantBedPage.setLayout(new GridLayout(3,5,5,5));
+        PlantBedRenderer pbr = new PlantBedRenderer();
+        JComboBox<PlantBed> plantBedList = new
+                JComboBox<>(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
+        //plantList.setCellRenderer(pbr);
+        plantBedList.setRenderer(pbr);
+        plantBedPage.add(new JLabel("Current Selected PlantBed:"));
+        plantBedPage.add(plantBedList);
+        plantBedPage.add(new JLabel("Current Selected Plant:"));
+        PlantRenderer p = new PlantRenderer();
+        JComboBox<PlantBed> plantList = new JComboBox(
+                myGarden.getPlantBedByIndex(plantBedList.getSelectedIndex()).getPlantArrayList().toArray(new Plant[0]));
+        plantList.setRenderer(p);
+        plantBedPage.add(plantList);
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+    }
+
+
+    private void initializeMainPage() {
+        mainPage = new JPanel();
+        jf.setContentPane(mainPage);
+        addPlantBedsButton();
+        addGardenStatsButton();
+        addWateringButton();
+        addSaveAndLoadUIButton();
     }
 
     public void saveOnQuit() {
     }
 
-    public void viewPlantBedsUI() {
+    public void addPlantBedsButton() {
         JButton b1 = new JButton("View/Modify Plant Beds");
         b1.setBounds(alignX, 50, btnWidth, btnHeight);
         b1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                jf.setContentPane(plantBedPage);
+                jf.repaint();
+                jf.revalidate();
             }
         });
-        jf.add(b1);
+        mainPage.add(b1);
     }
 
-    public void viewGardenStats() {
+    public void addGardenStatsButton() {
         JButton b2 = new JButton("View Garden Stats");
         JDialog statsWindow = new JDialog(jf, "Garden Stats", true);
         statsWindow.setLayout(new BorderLayout());
@@ -102,7 +144,7 @@ public class GardenApp extends JFrame {
                 "\nThere are " + myGarden.getNumOfPlants() + " plant(s)."),BorderLayout.CENTER);
         statsWindow.add(new JLabel(numDryPlants),BorderLayout.SOUTH);
         statsWindow.setSize(300,300);
-        jf.add(b2);
+        mainPage.add(b2);
     }
 
     public String generateDryPlants() {
@@ -118,16 +160,16 @@ public class GardenApp extends JFrame {
     }
 
 
-    private void saveAndLoadUI() {
+    private void addSaveAndLoadUIButton() {
         JButton b4 = new JButton("Save/Load");
         b4.setBounds(alignX, 150, btnWidth, btnHeight);
-        jf.add(b4);
+        mainPage.add(b4);
     }
 
-    private void wateringUI() {
+    private void addWateringButton() {
         JButton b3 = new JButton("Watering Way-Finder");
         b3.setBounds(alignX, 200, btnWidth, btnHeight);
-        jf.add(b3);
+        mainPage.add(b3);
     }
 
 

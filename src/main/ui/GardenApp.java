@@ -35,6 +35,7 @@ public class GardenApp extends JFrame {
     private int alignX = 400;
     private JPanel mainPage;
     private JPanel plantBedPage;
+    private JButton backButton;
 
     //EFFECTS: starts main  menu method to start the ui
     public GardenApp() {
@@ -62,7 +63,7 @@ public class GardenApp extends JFrame {
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                exit();
+                System.exit(0);
             }
         });
         mainPage.add(quitButton);
@@ -73,12 +74,12 @@ public class GardenApp extends JFrame {
     }
 
     private void initializePanels() {
+        plantBedPage = new JPanel();
+        plantBedPage.setLayout(new GridLayout(1,4));
         makePlantBedPage();
     }
 
     private void makePlantBedPage() {
-        plantBedPage = new JPanel();
-        plantBedPage.setLayout(new GridLayout(1,4));
         JList<PlantBed> pbList = new JList<>(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
         PlantBedRenderer pbr = new PlantBedRenderer();
         pbList.setCellRenderer(pbr);
@@ -86,16 +87,35 @@ public class GardenApp extends JFrame {
         plantBedPage.add(pbList);
         JTextField selectedPB = new JTextField();
         plantBedPage.add(selectedPB);
+        JButton goToPlant = new JButton("Go to Plant");
+        JDialog plantWindow = new JDialog(jf, true);
         pbList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 PlantBed selectedPlantBed = pbList.getSelectedValue();
                 selectedPB.setText("Current selected: " + selectedPlantBed.getName() + "\nNumber of plants: "
                         + selectedPlantBed.getPlantArrayList().size());
-
             }
         });
+        goToPlant.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updatePlantWindow(pbList.getSelectedValue(), plantWindow);
+                plantWindow.repaint();
+                plantWindow.revalidate();
+                plantWindow.setVisible(true);
+            }
+        });
+        plantBedPage.add(goToPlant);
+        plantBedPage.add(backButton);
+    }
 
+    private void updatePlantWindow(PlantBed pb, JDialog window) {
+        JLabel pbName = new JLabel(pb.getName());
+        window.add(pbName);
+        window.setSize(300,300);
+        window.repaint();
+        window.revalidate();
     }
 
 
@@ -106,6 +126,7 @@ public class GardenApp extends JFrame {
         addGardenStatsButton();
         addWateringButton();
         addSaveAndLoadUIButton();
+        createBackButton();
     }
 
     public void saveOnQuit() {
@@ -169,6 +190,19 @@ public class GardenApp extends JFrame {
         JButton b3 = new JButton("Watering Way-Finder");
         b3.setBounds(alignX, 200, btnWidth, btnHeight);
         mainPage.add(b3);
+    }
+
+    private void createBackButton() {
+        backButton = new JButton("Back to Main Menu");
+        backButton.setSize(btnWidth,btnHeight);
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jf.setContentPane(mainPage);
+                repaint();
+                revalidate();
+            }
+        });
     }
 
 

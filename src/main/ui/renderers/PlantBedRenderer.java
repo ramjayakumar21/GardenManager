@@ -1,4 +1,4 @@
-package ui;
+package ui.renderers;
 
 import model.PlantBed;
 

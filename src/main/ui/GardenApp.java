@@ -6,8 +6,11 @@ import model.Plant;
 import model.PlantBed;
 import persistence.ReaderJson;
 import persistence.WriterJson;
+import ui.renderers.PlantBedRenderer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,7 +67,7 @@ public class GardenApp extends JFrame {
         });
         mainPage.add(quitButton);
 
-        jf.setSize(700,500);
+        jf.setSize(700,450);
         jf.setLayout(null);
         jf.setVisible(true);//making the frame visible
     }
@@ -75,28 +78,24 @@ public class GardenApp extends JFrame {
 
     private void makePlantBedPage() {
         plantBedPage = new JPanel();
-        plantBedPage.setLayout(new GridLayout(3,5,5,5));
+        plantBedPage.setLayout(new GridLayout(1,4));
+        JList<PlantBed> pbList = new JList<>(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
         PlantBedRenderer pbr = new PlantBedRenderer();
-        JComboBox<PlantBed> plantBedList = new
-                JComboBox<>(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
-        //plantList.setCellRenderer(pbr);
-        plantBedList.setRenderer(pbr);
-        plantBedPage.add(new JLabel("Current Selected PlantBed:"));
-        plantBedPage.add(plantBedList);
-        plantBedPage.add(new JLabel("Current Selected Plant:"));
-        PlantRenderer p = new PlantRenderer();
-        JComboBox<PlantBed> plantList = new JComboBox(
-                myGarden.getPlantBedByIndex(plantBedList.getSelectedIndex()).getPlantArrayList().toArray(new Plant[0]));
-        plantList.setRenderer(p);
-        plantBedPage.add(plantList);
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
-        plantBedPage.add(new JTextArea("Current Selected PlantBed:"));
+        pbList.setCellRenderer(pbr);
+        pbList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        plantBedPage.add(pbList);
+        JTextField selectedPB = new JTextField();
+        plantBedPage.add(selectedPB);
+        pbList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                PlantBed selectedPlantBed = pbList.getSelectedValue();
+                selectedPB.setText("Current selected: " + selectedPlantBed.getName() + "\nNumber of plants: "
+                        + selectedPlantBed.getPlantArrayList().size());
+
+            }
+        });
+
     }
 
 

@@ -9,8 +9,6 @@ import persistence.WriterJson;
 import ui.renderers.PlantBedRenderer;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static javafx.application.Platform.exit;
 
 // provides the console based ui for using the Garden Manager application
 //       this class was made based of the TellerApp class from the TellerApp Project:
@@ -29,12 +26,18 @@ public class GardenApp extends JFrame {
     private static final String SOURCE_JSON = "./data/garden.json";
     private WriterJson writerJson;
     private ReaderJson readerJson;
+
+
     private JFrame jf;
+    private static final int WIDTH = 700;
+    private static final int HEIGHT = 450;
+
     private int btnWidth = 200;
     private int btnHeight = 50;
     private int alignX = 400;
     private JPanel mainPage;
     private JPanel plantBedPage;
+    private JPanel saveAndLoadPanel;
     private JButton backButton;
 
     //EFFECTS: starts main  menu method to start the ui
@@ -45,69 +48,67 @@ public class GardenApp extends JFrame {
     //MODIFIES: myGarden
     //EFFECTS: shows main menu options and takes user input
     public void mainMenu() {
-        boolean activeProgram = true;
-        input = new Scanner(System.in);
+        jf = new JFrame("Garden Manager");
         loadStartUp();
         initializeGUI();
+        jf.setSize(700,450);
     }
 
     public void initializeGUI() {
-        jf = new JFrame("Garden Manager");
-        jf.setLayout(new CardLayout());
-
         initializeMainPage();
         initializePanels();
 
-        JButton quitButton = new JButton("Quit Program");
-        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-        mainPage.add(quitButton);
-
-        jf.setSize(700,450);
-        jf.setLayout(null);
-        jf.setVisible(true);//making the frame visible
+        jf.setVisible(true);
     }
 
     private void initializePanels() {
         plantBedPage = new JPanel();
-        plantBedPage.setLayout(new GridLayout(1,4));
+        plantBedPage.setLayout(new GridLayout(2,3));
         makePlantBedPage();
+
+        saveAndLoadPanel = new JPanel();
+        saveAndLoadPanel.setLayout(null);
+        initSandL();
+    }
+
+    private void initSandL() {
+        JLabel j = new JLabel("Would you like to revert to last saved state or save in current state?");
+        j.setBounds(WIDTH / 2, HEIGHT / 3, WIDTH,30);
+        saveAndLoadPanel.add(j);
     }
 
     private void makePlantBedPage() {
+        JList<PlantBed> pbList = createJListPB();
+
+        JTextField selectedPB = new JTextField();
+        plantBedPage.add(selectedPB);
+        JPanel plantBedActions = new JPanel();
+        JButton goToPlant = new JButton("Go to Plant");
+        JDialog plantWindow = new JDialog(jf, true);
+        pbList.addListSelectionListener(e -> {
+            PlantBed selectedPlantBed = pbList.getSelectedValue();
+            selectedPB.setText("Current selected: " + selectedPlantBed.getName() + " \nNumber of plants: "
+                    + selectedPlantBed.getPlantArrayList().size());
+            plantWindow.removeAll();
+            plantWindow.revalidate();
+        });
+        goToPlant.addActionListener(e -> {
+            plantWindow.repaint();
+            plantWindow.revalidate();
+            updatePlantWindow(pbList.getSelectedValue(), plantWindow);
+            plantWindow.setVisible(true);
+        });
+        plantBedPage.add(goToPlant);
+        plantBedPage.add(backButton);
+    }
+
+    private JList<PlantBed> createJListPB() {
         JList<PlantBed> pbList = new JList<>(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
         PlantBedRenderer pbr = new PlantBedRenderer();
         pbList.setCellRenderer(pbr);
         pbList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         plantBedPage.add(pbList);
-        JTextField selectedPB = new JTextField();
-        plantBedPage.add(selectedPB);
-        JButton goToPlant = new JButton("Go to Plant");
-        JDialog plantWindow = new JDialog(jf, true);
-        pbList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                PlantBed selectedPlantBed = pbList.getSelectedValue();
-                selectedPB.setText("Current selected: " + selectedPlantBed.getName() + "\nNumber of plants: "
-                        + selectedPlantBed.getPlantArrayList().size());
-            }
-        });
-        goToPlant.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatePlantWindow(pbList.getSelectedValue(), plantWindow);
-                plantWindow.repaint();
-                plantWindow.revalidate();
-                plantWindow.setVisible(true);
-            }
-        });
-        plantBedPage.add(goToPlant);
-        plantBedPage.add(backButton);
+        return pbList;
     }
 
     private void updatePlantWindow(PlantBed pb, JDialog window) {
@@ -126,7 +127,15 @@ public class GardenApp extends JFrame {
         addGardenStatsButton();
         addWateringButton();
         addSaveAndLoadUIButton();
+        addQuitButton();
         createBackButton();
+    }
+
+    private void addQuitButton() {
+        JButton quitButton = new JButton("Quit Program");
+        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
+        quitButton.addActionListener(e -> System.exit(0));
+        mainPage.add(quitButton);
     }
 
     public void saveOnQuit() {
@@ -183,7 +192,18 @@ public class GardenApp extends JFrame {
     private void addSaveAndLoadUIButton() {
         JButton b4 = new JButton("Save/Load");
         b4.setBounds(alignX, 150, btnWidth, btnHeight);
+        b4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jf.setContentPane(saveAndLoadPanel);
+                jf.repaint();
+                jf.revalidate();
+            }
+        });
         mainPage.add(b4);
+    }
+
+    private void setupSavePanel() {
     }
 
     private void addWateringButton() {
@@ -238,16 +258,22 @@ public class GardenApp extends JFrame {
     //MODIFIES: myGarden
     //EFFECTS: takes user input from main menu and executes corresponding method
     public void mainMenuCommands(String userInput)  {
-        if (userInput.equals("a")) {
-            statisticsMenu();
-        } else if (userInput.equals("b")) {
-            gardenMenu();
-        } else if (userInput.equals("c")) {
-            waterWayFinderMenu();
-        } else if (userInput.equals("d")) {
-            saveAndRetrieveMenu();
-        } else {
-            System.out.println("Unrecognized command, please try again.");
+        switch (userInput) {
+            case "a":
+                statisticsMenu();
+                break;
+            case "b":
+                gardenMenu();
+                break;
+            case "c":
+                waterWayFinderMenu();
+                break;
+            case "d":
+                saveAndRetrieveMenu();
+                break;
+            default:
+                System.out.println("Unrecognized command, please try again.");
+                break;
         }
     }
 
@@ -452,14 +478,19 @@ public class GardenApp extends JFrame {
     //REQUIRES: string s should be one of "a", "b", "c", "d"
     //EFFECTS: takes user input from plant bed menu and executes corresponding method
     public void plantBedCommands(String s, PlantBed pb) {
-        if (s.equals("a")) {
-            viewPlant(pb);
-        } else if (s.equals("b")) {
-            removePlant(pb);
-        } else if (s.equals("c")) {
-            waterPlant(pb);
-        } else if (s.equals("d")) {
-            addPlant(pb);
+        switch (s) {
+            case "a":
+                viewPlant(pb);
+                break;
+            case "b":
+                removePlant(pb);
+                break;
+            case "c":
+                waterPlant(pb);
+                break;
+            case "d":
+                addPlant(pb);
+                break;
         }
     }
 

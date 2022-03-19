@@ -58,6 +58,9 @@ public class GardenApp extends JFrame {
         initializeMainPage();
         initializePanels();
 
+
+        jf.pack();
+        jf.setLocationRelativeTo(null);
         jf.setVisible(true);
     }
 
@@ -67,19 +70,45 @@ public class GardenApp extends JFrame {
         makePlantBedPage();
 
         saveAndLoadPanel = new JPanel();
-        saveAndLoadPanel.setLayout(null);
+        saveAndLoadPanel.setLayout(new GridBagLayout());
         initSandL();
     }
 
     private void initSandL() {
+        GridBagConstraints gc = new GridBagConstraints();
+        JDialog message = new JDialog();
+
         JLabel j = new JLabel("Would you like to revert to last saved state or save in current state?");
-        j.setBounds(WIDTH / 2, HEIGHT / 3, WIDTH,30);
-        saveAndLoadPanel.add(j);
+        gc.gridx = 1;
+        gc.gridy = 0;
+        saveAndLoadPanel.add(j,gc);
+        JButton b1 = new JButton("Revert to last save");
+        b1.addActionListener(e -> {
+            showMessage(message, retrieveGarden());
+        });
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 0.5;
+        gc.gridx = 0;
+        gc.gridy = 1;
+        saveAndLoadPanel.add(b1,gc);
+        JButton b2 = new JButton("Save current Garden");
+        b2.addActionListener(e -> {
+            showMessage(message, saveGarden());
+        });
+        gc.weightx = 0.5;
+        gc.gridx = 1;
+        saveAndLoadPanel.add(b2,gc);
+        saveAndLoadPanel.add(backButton);
+    }
+
+    private void showMessage(JDialog jd, String s) {
+        JLabel message = new JLabel(s);
+        jd.add(message, BorderLayout.CENTER);
+        jd.setVisible(true);
     }
 
     private void makePlantBedPage() {
         JList<PlantBed> pbList = createJListPB();
-
         JTextField selectedPB = new JTextField();
         plantBedPage.add(selectedPB);
         JPanel plantBedActions = new JPanel();
@@ -98,8 +127,36 @@ public class GardenApp extends JFrame {
             updatePlantWindow(pbList.getSelectedValue(), plantWindow);
             plantWindow.setVisible(true);
         });
+        newPlantBedButton();
         plantBedPage.add(goToPlant);
         plantBedPage.add(backButton);
+    }
+
+    private void newPlantBedButton() {
+        JButton addNewPB = new JButton("Add new plant-bed");
+        addNewPB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog jd = new JDialog();
+                jd.setLayout(new FlowLayout());
+                jd.setResizable(false);
+                jd.add(new JLabel("What is the name of the new plant bed?"));
+                JTextField nameField = new JTextField(20);
+                JButton createBedBtn = new JButton("Create PlantBed");
+                createBedBtn.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        myGarden.addPlantBed(new PlantBed(nameField.getText()));
+                        jd.setVisible(false);
+                    }
+                });
+                jd.add(nameField);
+                jd.add(createBedBtn);
+                jd.pack();
+                jd.setVisible(true);
+            }
+        });
+        plantBedPage.add(addNewPB);
     }
 
     private JList<PlantBed> createJListPB() {
@@ -133,9 +190,34 @@ public class GardenApp extends JFrame {
 
     private void addQuitButton() {
         JButton quitButton = new JButton("Quit Program");
-        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
-        quitButton.addActionListener(e -> System.exit(0));
+        quitButton.addActionListener(e -> {
+            JDialog saveQuitDialog = new JDialog();
+            saveQuitDialog.setLayout(new FlowLayout());
+            saveQuitDialog.add(new JLabel("Would you like to save before quitting?"));
+            JButton yesBtn = new JButton("Yes");
+            JButton quitBtn = new JButton("No");
+            quitBtn.addActionListener(e1 -> System.exit(0));
+            yesBtn.addActionListener(e1 -> {
+                saveAndQuit(quitBtn);
+            });
+            saveQuitDialog.add(yesBtn);
+            saveQuitDialog.add(quitBtn);
+            saveQuitDialog.setLocationRelativeTo(null);
+            saveQuitDialog.pack();
+            saveQuitDialog.setVisible(true);
+        });
         mainPage.add(quitButton);
+    }
+
+    private void saveAndQuit(JButton quit) {
+        JDialog jd = new JDialog();
+        jd.setLayout(new FlowLayout());
+        jd.add(new JLabel(saveGarden()));
+        quit.setText("Quit");
+        jd.add(quit);
+        jd.pack();
+        jd.setLocationRelativeTo(null);
+        jd.setVisible(true);
     }
 
     public void saveOnQuit() {
@@ -304,27 +386,27 @@ public class GardenApp extends JFrame {
     //MODIFIES: myGarden
     //EFFECTS: retrieves garden from JSON file and replaces current garden with it
     //         if unable to do so, print out message and do nothing
-    public void retrieveGarden() {
+    public String retrieveGarden() {
         try {
             readerJson = new ReaderJson(SOURCE_JSON);
             myGarden = readerJson.readSource();
-            System.out.println("Loaded Garden from " + SOURCE_JSON + "!");
+            return "Loaded Garden from " + SOURCE_JSON + "!";
         } catch (IOException e) {
-            System.out.println("Unable to read from file " + SOURCE_JSON);
+            return "Unable to read from file " + SOURCE_JSON;
         }
     }
 
     //EFFECT: saves current garden to JSON file at SOURCE_JSON
     //        if unable to do so, print out message and do nothing
-    public void saveGarden() {
+    public String saveGarden() {
         try {
             writerJson = new WriterJson(SOURCE_JSON);
             writerJson.open();
             writerJson.writeToJson(myGarden);
             writerJson.close();
-            System.out.println("Saved Garden to " + SOURCE_JSON + "!");
+            return "Saved Garden to " + SOURCE_JSON + "!";
         } catch (IOException e) {
-            System.out.println("Unable to save from file " + SOURCE_JSON);
+            return "Unable to save from file " + SOURCE_JSON;
         }
     }
 

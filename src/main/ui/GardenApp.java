@@ -9,6 +9,8 @@ import persistence.WriterJson;
 import ui.renderers.PlantBedRenderer;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,13 +67,15 @@ public class GardenApp extends JFrame {
     }
 
     private void initializePanels() {
-        plantBedPage = new JPanel();
-        plantBedPage.setLayout(new GridLayout(2,3));
-        makePlantBedPage();
-
         saveAndLoadPanel = new JPanel();
         saveAndLoadPanel.setLayout(new GridBagLayout());
         initSandL();
+
+        plantBedPage = new JPanel();
+        plantBedPage.setLayout(new GridBagLayout());
+        makePlantBedPage();
+
+
     }
 
     private void initSandL() {
@@ -108,53 +112,74 @@ public class GardenApp extends JFrame {
     }
 
     private void makePlantBedPage() {
+        plantBedPage.add(backButton);
+        GridBagConstraints gc = new GridBagConstraints();
         JList<PlantBed> pbList = createJListPB();
-        JTextField selectedPB = new JTextField();
+        JLabel selectedPB = new JLabel();
         plantBedPage.add(selectedPB);
         JPanel plantBedActions = new JPanel();
         JButton goToPlant = new JButton("Go to Plant");
         JDialog plantWindow = new JDialog(jf, true);
         pbList.addListSelectionListener(e -> {
-            PlantBed selectedPlantBed = pbList.getSelectedValue();
-            selectedPB.setText("Current selected: " + selectedPlantBed.getName() + " \nNumber of plants: "
-                    + selectedPlantBed.getPlantArrayList().size());
-            plantWindow.removeAll();
-            plantWindow.revalidate();
+            try {
+                PlantBed selectedPlantBed = pbList.getSelectedValue();
+                selectedPB.setText("Current selected: " + selectedPlantBed.getName() + " \nNumber of plants: "
+                        + selectedPlantBed.getPlantArrayList().size());
+                plantWindow.revalidate();
+            } catch (NullPointerException ne) {
+                selectedPB.setText("");
+            }
         });
         goToPlant.addActionListener(e -> {
             plantWindow.repaint();
             plantWindow.revalidate();
-            updatePlantWindow(pbList.getSelectedValue(), plantWindow);
+            JList plants = new JList(pbList.getSelectedValue().getPlantArrayList().toArray(new Plant[0]));
+            updatePlantWindow(plants, plantWindow);
             plantWindow.setVisible(true);
         });
-        newPlantBedButton();
+
+        addDeletePopup(pbList);
+        newPlantBedButton(pbList);
         plantBedPage.add(goToPlant);
-        plantBedPage.add(backButton);
+
     }
 
-    private void newPlantBedButton() {
-        JButton addNewPB = new JButton("Add new plant-bed");
-        addNewPB.addActionListener(new ActionListener() {
+    private void addDeletePopup(JList jlist) {
+        JPopupMenu edit = new JPopupMenu("Edit PlantBeds");
+        jlist.setComponentPopupMenu(edit);
+        JMenuItem delete = new JMenuItem("Delete");
+        edit.add(delete);
+        delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog jd = new JDialog();
-                jd.setLayout(new FlowLayout());
-                jd.setResizable(false);
-                jd.add(new JLabel("What is the name of the new plant bed?"));
-                JTextField nameField = new JTextField(20);
-                JButton createBedBtn = new JButton("Create PlantBed");
-                createBedBtn.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        myGarden.addPlantBed(new PlantBed(nameField.getText()));
-                        jd.setVisible(false);
-                    }
-                });
-                jd.add(nameField);
-                jd.add(createBedBtn);
-                jd.pack();
-                jd.setVisible(true);
+                PlantBed selectedPB = (PlantBed)jlist.getSelectedValue();
+                myGarden.getPlantBedArrayList().remove(selectedPB);
+                jlist.setListData(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
+                jlist.clearSelection();
+
             }
+        });
+        plantBedPage.add(edit);
+    }
+
+    private void newPlantBedButton(JList jlist) {
+        JButton addNewPB = new JButton("Add new plant-bed");
+        addNewPB.addActionListener(e -> {
+            JDialog jd = new JDialog();
+            jd.setLayout(new FlowLayout());
+            jd.setResizable(false);
+            jd.add(new JLabel("What is the name of the new plant bed?"));
+            JTextField nameField = new JTextField(20);
+            JButton createBedBtn = new JButton("Create PlantBed");
+            createBedBtn.addActionListener(e1 -> {
+                myGarden.addPlantBed(new PlantBed(nameField.getText()));
+                jd.setVisible(false);
+                jlist.setListData(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
+            });
+            jd.add(nameField);
+            jd.add(createBedBtn);
+            jd.pack();
+            jd.setVisible(true);
         });
         plantBedPage.add(addNewPB);
     }
@@ -168,12 +193,25 @@ public class GardenApp extends JFrame {
         return pbList;
     }
 
-    private void updatePlantWindow(PlantBed pb, JDialog window) {
-        JLabel pbName = new JLabel(pb.getName());
-        window.add(pbName);
-        window.setSize(300,300);
-        window.repaint();
-        window.revalidate();
+    private void updatePlantWindow(JList plants, JDialog window) {
+        plants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        window.setLayout(new FlowLayout());
+        window.add(plants);
+        JTextField plantInfo = new JTextField();
+        plants.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                Plant p = (Plant)plants.getSelectedValue();
+                plantInfo.setText("Plant Name: " + p.getName() + "\nPlant type: " + p.getPlantType() + "\nPlant water cycle: " + p.getWaterCycle());
+                plantInfo.setVisible(true);
+            }
+        });
+        plantInfo.setEditable(false);
+
+
+
+        window.add(plantInfo);
+        window.pack();
     }
 
 

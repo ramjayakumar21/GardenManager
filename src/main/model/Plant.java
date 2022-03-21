@@ -6,11 +6,22 @@ import persistence.Writable;
 
 // represents plant and given attributes it can have
 public class Plant implements Writable {
+    public static final String[] PLANT_TYPES = {
+            "Perennial", "Biennial", "Cacti", "Bulb", "Shrub", "Fruit", "Vegetable"
+    };
+    public static final String[] LIFE_STAGE = {
+            "Seed", "Sprout", "Young", "Mature"
+    };
+    public static final String[] WATER_CYCLE = {
+            "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"
+    };
     private String name;
     private String lifeStage;
     private String waterCycle;
     private String plantType;
     private Boolean isDry;
+
+
 
     //REQUIRES: waterCycle should be one of:
     //              "Daily", "Every 2 Days", "Every 3 Days", "Weekly", "Monthly"

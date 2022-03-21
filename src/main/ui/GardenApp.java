@@ -7,16 +7,21 @@ import model.PlantBed;
 import persistence.ReaderJson;
 import persistence.WriterJson;
 import ui.renderers.PlantBedRenderer;
+import ui.renderers.PlantRenderer;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+//TODO: make add plant window close when finished
+//TODO: add back button on all pages
+
 
 
 // provides the console based ui for using the Garden Manager application
@@ -34,13 +39,13 @@ public class GardenApp extends JFrame {
     private static final int WIDTH = 700;
     private static final int HEIGHT = 450;
 
-    private int btnWidth = 200;
-    private int btnHeight = 50;
-    private int alignX = 400;
+    private final int btnWidth = 200;
+    private final int btnHeight = 50;
+    private final int alignX = 400;
     private JPanel mainPage;
     private JPanel plantBedPage;
     private JPanel saveAndLoadPanel;
-    private JButton backButton;
+    private JPanel waterWayFinderPage;
 
     //EFFECTS: starts main  menu method to start the ui
     public GardenApp() {
@@ -53,17 +58,23 @@ public class GardenApp extends JFrame {
         jf = new JFrame("Garden Manager");
         loadStartUp();
         initializeGUI();
-        jf.setSize(700,450);
+        jf.setSize(700, 450);
     }
 
     public void initializeGUI() {
         initializeMainPage();
         initializePanels();
 
-
         jf.pack();
         jf.setLocationRelativeTo(null);
         jf.setVisible(true);
+        jf.setLayout(new GridBagLayout());
+        jf.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveGardenDialog();
+            }
+        });
     }
 
     private void initializePanels() {
@@ -75,6 +86,35 @@ public class GardenApp extends JFrame {
         plantBedPage.setLayout(new GridBagLayout());
         makePlantBedPage();
 
+        waterWayFinderPage = new JPanel();
+        makeWaterPage();
+    }
+
+    private void makeWaterPage() {
+        JLabel currentBed = new JLabel();
+        JLabel currentPlant = new JLabel();
+        JButton nextButton = new JButton("Begin");
+
+        nextButton.addActionListener(e -> {
+            JToggleButton jb = new JToggleButton("Water and go to next Plant");
+            waterWayFinderPage.add(jb);
+            for (PlantBed pb : myGarden.getPlantBedArrayList()) {
+                currentBed.setText("Current plant bed: " + pb.getName());
+                for (Plant p : pb.getPlantArrayList()) {
+                    if (p.getDry()) {
+                        JOptionPane.showMessageDialog(jf,p.getName() + " at " + pb.getName() + "needs water!");
+                        p.setDry(false);
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(jf, "All Plants have been watered!");
+            jf.setContentPane(mainPage);
+        });
+
+        waterWayFinderPage.add(currentBed);
+        waterWayFinderPage.add(currentPlant);
+        waterWayFinderPage.add(nextButton);
+
 
     }
 
@@ -85,7 +125,7 @@ public class GardenApp extends JFrame {
         JLabel j = new JLabel("Would you like to revert to last saved state or save in current state?");
         gc.gridx = 1;
         gc.gridy = 0;
-        saveAndLoadPanel.add(j,gc);
+        saveAndLoadPanel.add(j, gc);
         JButton b1 = new JButton("Revert to last save");
         b1.addActionListener(e -> {
             showMessage(message, retrieveGarden());
@@ -94,15 +134,15 @@ public class GardenApp extends JFrame {
         gc.weightx = 0.5;
         gc.gridx = 0;
         gc.gridy = 1;
-        saveAndLoadPanel.add(b1,gc);
+        saveAndLoadPanel.add(b1, gc);
         JButton b2 = new JButton("Save current Garden");
         b2.addActionListener(e -> {
             showMessage(message, saveGarden());
         });
         gc.weightx = 0.5;
         gc.gridx = 1;
-        saveAndLoadPanel.add(b2,gc);
-        saveAndLoadPanel.add(backButton);
+        saveAndLoadPanel.add(b2, gc);
+        saveAndLoadPanel.add(createBackButton());
     }
 
     private void showMessage(JDialog jd, String s) {
@@ -112,12 +152,10 @@ public class GardenApp extends JFrame {
     }
 
     private void makePlantBedPage() {
-        plantBedPage.add(backButton);
-        GridBagConstraints gc = new GridBagConstraints();
+        plantBedPage.add(createBackButton());
         JList<PlantBed> pbList = createJListPB();
         JLabel selectedPB = new JLabel();
         plantBedPage.add(selectedPB);
-        JPanel plantBedActions = new JPanel();
         JButton goToPlant = new JButton("Go to Plant");
         JDialog plantWindow = new JDialog(jf, true);
         pbList.addListSelectionListener(e -> {
@@ -131,13 +169,12 @@ public class GardenApp extends JFrame {
             }
         });
         goToPlant.addActionListener(e -> {
-            plantWindow.repaint();
-            plantWindow.revalidate();
+            plantWindow.setContentPane(new JPanel());
             JList plants = new JList(pbList.getSelectedValue().getPlantArrayList().toArray(new Plant[0]));
-            updatePlantWindow(plants, plantWindow);
+            updatePlantWindow(plants, pbList.getSelectedValue(), plantWindow);
             plantWindow.setVisible(true);
-        });
 
+        });
         addDeletePopup(pbList);
         newPlantBedButton(pbList);
         plantBedPage.add(goToPlant);
@@ -149,15 +186,11 @@ public class GardenApp extends JFrame {
         jlist.setComponentPopupMenu(edit);
         JMenuItem delete = new JMenuItem("Delete");
         edit.add(delete);
-        delete.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PlantBed selectedPB = (PlantBed)jlist.getSelectedValue();
-                myGarden.getPlantBedArrayList().remove(selectedPB);
-                jlist.setListData(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
-                jlist.clearSelection();
-
-            }
+        delete.addActionListener(e -> {
+            PlantBed selectedPB = (PlantBed) jlist.getSelectedValue();
+            myGarden.getPlantBedArrayList().remove(selectedPB);
+            jlist.clearSelection();
+            jlist.setListData(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
         });
         plantBedPage.add(edit);
     }
@@ -193,25 +226,96 @@ public class GardenApp extends JFrame {
         return pbList;
     }
 
-    private void updatePlantWindow(JList plants, JDialog window) {
+    private void updatePlantWindow(JList plants, PlantBed pb, JDialog window) {
+        PlantRenderer pr = new PlantRenderer();
+        plants.setCellRenderer(pr);
         plants.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         window.setLayout(new FlowLayout());
         window.add(plants);
-        JTextField plantInfo = new JTextField();
-        plants.addListSelectionListener(new ListSelectionListener() {
+        JLabel plantInfo = new JLabel("No plant selected");
+        plants.addListSelectionListener(e -> {
+            Plant p = (Plant) plants.getSelectedValue();
+            plantInfo.setText("<html>Name: " + p.getName() + "<br/>Type: " + p.getPlantType()
+                    + " <br/>Watering Cycle: " + p.getWaterCycle() + " <br/> Needs Water? " + p.getDry());
+            plantInfo.setVisible(true);
+            window.pack();
+        });
+        addNewPlant(window, pb);
+
+        JPopupMenu editPlants = new JPopupMenu("Edit Plants");
+        plants.setComponentPopupMenu(editPlants);
+        JMenuItem delete = new JMenuItem("Delete");
+        JMenuItem waterPlant = new JMenuItem("Water Plant");
+
+        editPlants.add(delete);
+        delete.addActionListener(e -> {
+            Plant selectedPlant = (Plant) plants.getSelectedValue();
+            pb.getPlantArrayList().remove(selectedPlant);
+            plants.setListData(pb.getPlantArrayList().toArray(new Plant[0]));
+            plants.clearSelection();
+        });
+
+        editPlants.add(waterPlant);
+        waterPlant.addActionListener(new ActionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
-                Plant p = (Plant)plants.getSelectedValue();
-                plantInfo.setText("Plant Name: " + p.getName() + "\nPlant type: " + p.getPlantType() + "\nPlant water cycle: " + p.getWaterCycle());
-                plantInfo.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                Plant selectedPlant = (Plant) plants.getSelectedValue();
+                if (pb.waterPlant(pb.getPlantArrayList().indexOf(selectedPlant))) {
+                    JOptionPane.showMessageDialog(window, "Successfully Watered!");
+                } else {
+                    JOptionPane.showMessageDialog(window,
+                            "Sorry, this plant is already watered! (do you want to drown it?)");
+                }
             }
         });
-        plantInfo.setEditable(false);
 
-
-
+        window.add(editPlants);
         window.add(plantInfo);
         window.pack();
+    }
+
+    private void addNewPlant(JDialog window, PlantBed pb) {
+        JButton addNewPlantBtn = new JButton("Add new plant");
+        addNewPlantBtn.addActionListener(e -> {
+            JPanel jd = new JPanel();
+            JTabbedPane jtp = new JTabbedPane();
+            jd.add(jtp);
+            window.setContentPane(jd);
+            JTextField plantName = new JTextField(15);
+            JComboBox plantTypeCB = new JComboBox(Plant.PLANT_TYPES);
+            JComboBox plantWaterCB = new JComboBox(Plant.WATER_CYCLE);
+            JComboBox plantLifeCB = new JComboBox(Plant.LIFE_STAGE);
+            setupNewPlantMenu(jtp, plantName, plantTypeCB, plantWaterCB, plantLifeCB);
+            JButton createPlant = new JButton("Create Plant");
+            createPlant.addActionListener(e1 -> {
+                pb.addPlant(plantName.getText(), plantWaterCB.getSelectedItem().toString(),
+                        plantTypeCB.getSelectedItem().toString(), plantLifeCB.getSelectedItem().toString());
+                JOptionPane.showMessageDialog(jd, "The plant was successfully added",
+                        "New Plant", JOptionPane.WARNING_MESSAGE);
+            });
+            jtp.addTab("Finish", createPlant);
+            window.pack();
+        });
+        window.add(addNewPlantBtn);
+    }
+
+    private void setupNewPlantMenu(JTabbedPane jtp, JTextField plantName, JComboBox plantTypeCB, JComboBox plantWaterCB, JComboBox plantLifeCB) {
+        JPanel nameTab = new JPanel();
+        nameTab.add(new JLabel("What is the name of your new plant?"));
+        nameTab.add(plantName);
+        jtp.addTab("Name", nameTab);
+        JPanel typeTab = new JPanel();
+        typeTab.add(new JLabel("<html>What type of plant is it?"));
+        typeTab.add(plantTypeCB);
+        jtp.addTab("Type", typeTab);
+        JPanel waterTab = new JPanel();
+        waterTab.add(new JLabel("<html>How frequently do you need to water this plant?"));
+        waterTab.add(plantWaterCB);
+        jtp.addTab("Watering Cycle", waterTab);
+        JPanel ageTab = new JPanel();
+        ageTab.add(new JLabel("<html>At what life stage is this plant in?"));
+        ageTab.add(plantLifeCB);
+        jtp.addTab("LifeStage", ageTab);
     }
 
 
@@ -229,22 +333,26 @@ public class GardenApp extends JFrame {
     private void addQuitButton() {
         JButton quitButton = new JButton("Quit Program");
         quitButton.addActionListener(e -> {
-            JDialog saveQuitDialog = new JDialog();
-            saveQuitDialog.setLayout(new FlowLayout());
-            saveQuitDialog.add(new JLabel("Would you like to save before quitting?"));
-            JButton yesBtn = new JButton("Yes");
-            JButton quitBtn = new JButton("No");
-            quitBtn.addActionListener(e1 -> System.exit(0));
-            yesBtn.addActionListener(e1 -> {
-                saveAndQuit(quitBtn);
-            });
-            saveQuitDialog.add(yesBtn);
-            saveQuitDialog.add(quitBtn);
-            saveQuitDialog.setLocationRelativeTo(null);
-            saveQuitDialog.pack();
-            saveQuitDialog.setVisible(true);
+            saveGardenDialog();
         });
         mainPage.add(quitButton);
+    }
+
+    private void saveGardenDialog() {
+        JDialog saveQuitDialog = new JDialog();
+        saveQuitDialog.setLayout(new FlowLayout());
+        saveQuitDialog.add(new JLabel("Would you like to save before quitting?"));
+        JButton yesBtn = new JButton("Yes");
+        JButton quitBtn = new JButton("No");
+        quitBtn.addActionListener(e1 -> System.exit(0));
+        yesBtn.addActionListener(e1 -> {
+            saveAndQuit(quitBtn);
+        });
+        saveQuitDialog.add(yesBtn);
+        saveQuitDialog.add(quitBtn);
+        saveQuitDialog.setLocationRelativeTo(null);
+        saveQuitDialog.pack();
+        saveQuitDialog.setVisible(true);
     }
 
     private void saveAndQuit(JButton quit) {
@@ -288,18 +396,18 @@ public class GardenApp extends JFrame {
         });
         String numDryPlants = generateDryPlants();
         statsWindow.add(new JLabel(
-                "\nThere are " + myGarden.getNumOfPlantBeds() + " plant bed(s)."),BorderLayout.NORTH);
+                "\nThere are " + myGarden.getNumOfPlantBeds() + " plant bed(s)."), BorderLayout.NORTH);
         statsWindow.add(new JLabel(
-                "\nThere are " + myGarden.getNumOfPlants() + " plant(s)."),BorderLayout.CENTER);
-        statsWindow.add(new JLabel(numDryPlants),BorderLayout.SOUTH);
-        statsWindow.setSize(300,300);
+                "\nThere are " + myGarden.getNumOfPlants() + " plant(s)."), BorderLayout.CENTER);
+        statsWindow.add(new JLabel(numDryPlants), BorderLayout.SOUTH);
+        statsWindow.setSize(300, 300);
         mainPage.add(b2);
     }
 
     public String generateDryPlants() {
         int count = 0;
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
-            for (Plant p: pb.getPlantArrayList()) {
+            for (Plant p : pb.getPlantArrayList()) {
                 if (p.getDry()) {
                     count += 1;
                 }
@@ -323,18 +431,23 @@ public class GardenApp extends JFrame {
         mainPage.add(b4);
     }
 
-    private void setupSavePanel() {
-    }
-
     private void addWateringButton() {
         JButton b3 = new JButton("Watering Way-Finder");
         b3.setBounds(alignX, 200, btnWidth, btnHeight);
         mainPage.add(b3);
+        b3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jf.setContentPane(waterWayFinderPage);
+                jf.repaint();
+                jf.revalidate();
+            }
+        });
     }
 
-    private void createBackButton() {
-        backButton = new JButton("Back to Main Menu");
-        backButton.setSize(btnWidth,btnHeight);
+    private JButton createBackButton() {
+        JButton backButton = new JButton("Back to Main Menu");
+        backButton.setSize(btnWidth, btnHeight);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -343,6 +456,7 @@ public class GardenApp extends JFrame {
                 revalidate();
             }
         });
+        return backButton;
     }
 
 
@@ -356,7 +470,7 @@ public class GardenApp extends JFrame {
             myGarden = readerJson.readSource();
             System.out.println("Loaded Garden from " + SOURCE_JSON + "!");
         } catch (IOException e) {
-            System.out.println("Unable to retrieve saved data from "  + SOURCE_JSON);
+            System.out.println("Unable to retrieve saved data from " + SOURCE_JSON);
             System.out.println("Using demo data...");
             startUp();
         }
@@ -377,7 +491,7 @@ public class GardenApp extends JFrame {
 
     //MODIFIES: myGarden
     //EFFECTS: takes user input from main menu and executes corresponding method
-    public void mainMenuCommands(String userInput)  {
+    public void mainMenuCommands(String userInput) {
         switch (userInput) {
             case "a":
                 statisticsMenu();
@@ -457,7 +571,7 @@ public class GardenApp extends JFrame {
         System.out.println("----WATER WAY-FINDER---");
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
             System.out.println("\nFrom plant bed '" + pb.getName() + "':");
-            for (Plant p: pb.getPlantArrayList()) {
+            for (Plant p : pb.getPlantArrayList()) {
                 if (p.getDry()) {
                     System.out.println("Plant " + p.getName() + " needs water!");
                     System.out.println("(enter any character to go to next plant)");
@@ -480,7 +594,7 @@ public class GardenApp extends JFrame {
         System.out.println("\nThere are " + numOfPlant + " plant(s).");
         int count = 0;
         for (PlantBed pb : myGarden.getPlantBedArrayList()) {
-            for (Plant p: pb.getPlantArrayList()) {
+            for (Plant p : pb.getPlantArrayList()) {
                 if (p.getDry()) {
                     count += 1;
                 }
@@ -570,7 +684,7 @@ public class GardenApp extends JFrame {
         PlantBed pb = myGarden.getPlantBedArrayList().get(Integer.parseInt(userInput));
 
         System.out.println("Plant Bed: " + pb.getName() + "\nPlants: ");
-        for (Plant p: pb.getPlantArrayList()) {
+        for (Plant p : pb.getPlantArrayList()) {
             System.out.println(p.getName());
         }
         while (activeProgram) {
@@ -714,14 +828,14 @@ public class GardenApp extends JFrame {
         System.out.println("How often do you need to water the plant?");
         System.out.println("\"Daily\", \"Every 2 Days\", \"Every 3 Days\", \"Weekly\", \"Monthly\"");
         String water = input.nextLine();
-        pb.addPlant(new Plant(name,water,type,age));
+        pb.addPlant(new Plant(name, water, type, age));
         System.out.println("The plant '" + name + "' was added to the bed '" + pb.getName() + "'!");
     }
 
     //MODIFIES: this
     //EFFECTS: initializes example garden data for manipulation
     public void startUp() {
-        Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
+        Plant p1 = new Plant("Rose", "Weekly", "Bulb", "Mature");
         Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
         Plant p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
         PlantBed bed1 = new PlantBed("Bed 1");

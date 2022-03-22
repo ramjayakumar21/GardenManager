@@ -1,6 +1,7 @@
 package ui;
 
 
+import javafx.scene.image.Image;
 import model.Garden;
 import model.Plant;
 import model.PlantBed;
@@ -9,12 +10,13 @@ import persistence.WriterJson;
 import ui.renderers.PlantBedRenderer;
 import ui.renderers.PlantRenderer;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -28,10 +30,10 @@ import java.util.Scanner;
 //       this class was made based of the TellerApp class from the TellerApp Project:
 //       https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class GardenApp extends JFrame {
+    private static final int SPACING = 20;
     private Garden myGarden;
     private Scanner input;
     private static final String SOURCE_JSON = "./data/garden.json";
-    private WriterJson writerJson;
     private ReaderJson readerJson;
 
 
@@ -66,24 +68,24 @@ public class GardenApp extends JFrame {
         initializePanels();
 
         jf.pack();
-        jf.setLocationRelativeTo(null);
-        jf.setVisible(true);
-        jf.setLayout(new GridBagLayout());
+
+        jf.setResizable(false);
         jf.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 saveGardenDialog();
             }
         });
+        jf.setVisible(true);
     }
 
     private void initializePanels() {
         saveAndLoadPanel = new JPanel();
-        saveAndLoadPanel.setLayout(new GridBagLayout());
+        saveAndLoadPanel.setLayout(null);
         initSandL();
 
         plantBedPage = new JPanel();
-        plantBedPage.setLayout(new GridBagLayout());
+        plantBedPage.setLayout(null);
         makePlantBedPage();
 
         waterWayFinderPage = new JPanel();
@@ -114,35 +116,26 @@ public class GardenApp extends JFrame {
         waterWayFinderPage.add(currentBed);
         waterWayFinderPage.add(currentPlant);
         waterWayFinderPage.add(nextButton);
-
-
+        waterWayFinderPage.add(createBackButton());
     }
 
     private void initSandL() {
-        GridBagConstraints gc = new GridBagConstraints();
         JDialog message = new JDialog();
 
         JLabel j = new JLabel("Would you like to revert to last saved state or save in current state?");
-        gc.gridx = 1;
-        gc.gridy = 0;
-        saveAndLoadPanel.add(j, gc);
+        j.setBounds(150, 100, WIDTH, 20);
+        saveAndLoadPanel.add(j);
         JButton b1 = new JButton("Revert to last save");
-        b1.addActionListener(e -> {
-            showMessage(message, retrieveGarden());
-        });
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.5;
-        gc.gridx = 0;
-        gc.gridy = 1;
-        saveAndLoadPanel.add(b1, gc);
+        b1.addActionListener(e -> showMessage(message, retrieveGarden()));
+        saveAndLoadPanel.add(b1);
+        b1.setBounds(25, 200, btnWidth, btnHeight);
         JButton b2 = new JButton("Save current Garden");
-        b2.addActionListener(e -> {
-            showMessage(message, saveGarden());
-        });
-        gc.weightx = 0.5;
-        gc.gridx = 1;
-        saveAndLoadPanel.add(b2, gc);
-        saveAndLoadPanel.add(createBackButton());
+        b2.addActionListener(e -> showMessage(message, saveGarden()));
+        b2.setBounds(b1.getX() + btnWidth + 20, 200, btnWidth, btnHeight);
+        saveAndLoadPanel.add(b2);
+        JButton backBtn = createBackButton();
+        backBtn.setBounds(b2.getX() + btnWidth + 20, 200, btnWidth, btnHeight);
+        saveAndLoadPanel.add(backBtn);
     }
 
     private void showMessage(JDialog jd, String s) {
@@ -152,16 +145,16 @@ public class GardenApp extends JFrame {
     }
 
     private void makePlantBedPage() {
-        plantBedPage.add(createBackButton());
         JList<PlantBed> pbList = createJListPB();
-        JLabel selectedPB = new JLabel();
+        JLabel selectedPB = new JLabel("No Plant Bed selected");
+        selectedPB.setBounds(alignX,50,300, 300);
         plantBedPage.add(selectedPB);
         JButton goToPlant = new JButton("Go to Plant");
         JDialog plantWindow = new JDialog(jf, true);
         pbList.addListSelectionListener(e -> {
             try {
                 PlantBed selectedPlantBed = pbList.getSelectedValue();
-                selectedPB.setText("Current selected: " + selectedPlantBed.getName() + " \nNumber of plants: "
+                selectedPB.setText("<html>Current selected: " + selectedPlantBed.getName() + "<br/>Number of plants: "
                         + selectedPlantBed.getPlantArrayList().size());
                 plantWindow.revalidate();
             } catch (NullPointerException ne) {
@@ -169,16 +162,31 @@ public class GardenApp extends JFrame {
             }
         });
         goToPlant.addActionListener(e -> {
-            plantWindow.setContentPane(new JPanel());
-            JList plants = new JList(pbList.getSelectedValue().getPlantArrayList().toArray(new Plant[0]));
-            updatePlantWindow(plants, pbList.getSelectedValue(), plantWindow);
-            plantWindow.setVisible(true);
+            try {
+                createPlantWindow(pbList, plantWindow);
+            } catch (NullPointerException ne) {
+                // do nothing -- happen when trying to go to plant without bed selected
+            }
 
         });
+        addPlantBedBtns(pbList, goToPlant);
+    }
+
+    private void createPlantWindow(JList<PlantBed> pbList, JDialog plantWindow) {
+        plantWindow.setContentPane(new JPanel());
+        JList plants = new JList(pbList.getSelectedValue().getPlantArrayList().toArray(new Plant[0]));
+        updatePlantWindow(plants, pbList.getSelectedValue(), plantWindow);
+        plantWindow.setVisible(true);
+    }
+
+    private void addPlantBedBtns(JList<PlantBed> pbList, JButton goToPlant) {
         addDeletePopup(pbList);
         newPlantBedButton(pbList);
+        goToPlant.setBounds(alignX, 100, btnWidth, btnHeight);
         plantBedPage.add(goToPlant);
-
+        JButton backButton = createBackButton();
+        backButton.setBounds(alignX, 300, btnWidth, btnHeight);
+        plantBedPage.add(backButton);
     }
 
     private void addDeletePopup(JList jlist) {
@@ -214,6 +222,7 @@ public class GardenApp extends JFrame {
             jd.pack();
             jd.setVisible(true);
         });
+        addNewPB.setBounds(alignX, 50, btnWidth, btnHeight);
         plantBedPage.add(addNewPB);
     }
 
@@ -222,6 +231,7 @@ public class GardenApp extends JFrame {
         PlantBedRenderer pbr = new PlantBedRenderer();
         pbList.setCellRenderer(pbr);
         pbList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        pbList.setBounds(0,0,WIDTH / 2, HEIGHT);
         plantBedPage.add(pbList);
         return pbList;
     }
@@ -233,12 +243,16 @@ public class GardenApp extends JFrame {
         window.setLayout(new FlowLayout());
         window.add(plants);
         JLabel plantInfo = new JLabel("No plant selected");
+        JPopupMenu editPlants = getPlantsPopupMenu(plants, pb, window, plantInfo);
+
+        window.add(editPlants);
+        window.add(plantInfo);
+        window.pack();
+    }
+
+    private JPopupMenu getPlantsPopupMenu(JList plants, PlantBed pb, JDialog window, JLabel plantInfo) {
         plants.addListSelectionListener(e -> {
-            Plant p = (Plant) plants.getSelectedValue();
-            plantInfo.setText("<html>Name: " + p.getName() + "<br/>Type: " + p.getPlantType()
-                    + " <br/>Watering Cycle: " + p.getWaterCycle() + " <br/> Needs Water? " + p.getDry());
-            plantInfo.setVisible(true);
-            window.pack();
+            makePlantInfoText(plants, window, plantInfo);
         });
         addNewPlant(window, pb);
 
@@ -256,21 +270,27 @@ public class GardenApp extends JFrame {
         });
 
         editPlants.add(waterPlant);
-        waterPlant.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Plant selectedPlant = (Plant) plants.getSelectedValue();
-                if (pb.waterPlant(pb.getPlantArrayList().indexOf(selectedPlant))) {
-                    JOptionPane.showMessageDialog(window, "Successfully Watered!");
-                } else {
-                    JOptionPane.showMessageDialog(window,
-                            "Sorry, this plant is already watered! (do you want to drown it?)");
-                }
-            }
+        waterPlant.addActionListener(e -> {
+            waterPlantPopup(plants, pb, window);
         });
+        return editPlants;
+    }
 
-        window.add(editPlants);
-        window.add(plantInfo);
+    private void waterPlantPopup(JList plants, PlantBed pb, JDialog window) {
+        Plant selectedPlant = (Plant) plants.getSelectedValue();
+        if (pb.waterPlant(pb.getPlantArrayList().indexOf(selectedPlant))) {
+            JOptionPane.showMessageDialog(window, "Successfully Watered!");
+        } else {
+            JOptionPane.showMessageDialog(window,
+                    "Sorry, this plant is already watered! (do you want to drown it?)");
+        }
+    }
+
+    private void makePlantInfoText(JList plants, JDialog window, JLabel plantInfo) {
+        Plant p = (Plant) plants.getSelectedValue();
+        plantInfo.setText("<html>Name: " + p.getName() + "<br/>Type: " + p.getPlantType()
+                + " <br/>Watering Cycle: " + p.getWaterCycle() + " <br/> Needs Water? " + p.getDry());
+        plantInfo.setVisible(true);
         window.pack();
     }
 
@@ -299,7 +319,8 @@ public class GardenApp extends JFrame {
         window.add(addNewPlantBtn);
     }
 
-    private void setupNewPlantMenu(JTabbedPane jtp, JTextField plantName, JComboBox plantTypeCB, JComboBox plantWaterCB, JComboBox plantLifeCB) {
+    private void setupNewPlantMenu(JTabbedPane jtp, JTextField plantName, JComboBox plantTypeCB,
+                                   JComboBox plantWaterCB, JComboBox plantLifeCB) {
         JPanel nameTab = new JPanel();
         nameTab.add(new JLabel("What is the name of your new plant?"));
         nameTab.add(plantName);
@@ -321,7 +342,18 @@ public class GardenApp extends JFrame {
 
     private void initializeMainPage() {
         mainPage = new JPanel();
+        mainPage.setLayout(null);
+        mainPage.setBackground(new Color(0x84D384));
         jf.setContentPane(mainPage);
+
+        try {
+            BufferedImage img = ImageIO.read(new File("data/imgs/plant.png"));
+            JLabel imgLoc = new JLabel(new ImageIcon(img));
+            imgLoc.setBounds(0,0,300,HEIGHT);
+            jf.add(imgLoc);
+        } catch (IOException e) {
+            // do nothing
+        }
         addPlantBedsButton();
         addGardenStatsButton();
         addWateringButton();
@@ -335,11 +367,13 @@ public class GardenApp extends JFrame {
         quitButton.addActionListener(e -> {
             saveGardenDialog();
         });
+        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
         mainPage.add(quitButton);
     }
 
     private void saveGardenDialog() {
         JDialog saveQuitDialog = new JDialog();
+        saveQuitDialog.setLocationRelativeTo(null);
         saveQuitDialog.setLayout(new FlowLayout());
         saveQuitDialog.add(new JLabel("Would you like to save before quitting?"));
         JButton yesBtn = new JButton("Yes");
@@ -366,19 +400,14 @@ public class GardenApp extends JFrame {
         jd.setVisible(true);
     }
 
-    public void saveOnQuit() {
-    }
 
     public void addPlantBedsButton() {
         JButton b1 = new JButton("View/Modify Plant Beds");
         b1.setBounds(alignX, 50, btnWidth, btnHeight);
-        b1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jf.setContentPane(plantBedPage);
-                jf.repaint();
-                jf.revalidate();
-            }
+        b1.addActionListener(e -> {
+            jf.setContentPane(plantBedPage);
+            jf.repaint();
+            jf.revalidate();
         });
         mainPage.add(b1);
     }
@@ -386,21 +415,20 @@ public class GardenApp extends JFrame {
     public void addGardenStatsButton() {
         JButton b2 = new JButton("View Garden Stats");
         JDialog statsWindow = new JDialog(jf, "Garden Stats", true);
-        statsWindow.setLayout(new BorderLayout());
+        statsWindow.setLayout(null);
         b2.setBounds(alignX, 100, btnWidth, btnHeight);
-        b2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                statsWindow.setVisible(true);
-            }
-        });
+        b2.addActionListener(e -> statsWindow.setVisible(true));
         String numDryPlants = generateDryPlants();
-        statsWindow.add(new JLabel(
-                "\nThere are " + myGarden.getNumOfPlantBeds() + " plant bed(s)."), BorderLayout.NORTH);
-        statsWindow.add(new JLabel(
-                "\nThere are " + myGarden.getNumOfPlants() + " plant(s)."), BorderLayout.CENTER);
-        statsWindow.add(new JLabel(numDryPlants), BorderLayout.SOUTH);
-        statsWindow.setSize(300, 300);
+        JLabel plantBedNum = new JLabel("\nThere are " + myGarden.getNumOfPlantBeds() + " plant bed(s).");
+        plantBedNum.setBounds(70, 50, 300, 50);
+        statsWindow.add(plantBedNum);
+        JLabel plantsNum = new JLabel("\nThere are " + myGarden.getNumOfPlants() + " plant(s).");
+        plantsNum.setBounds(70, 100, 300, 50);
+        statsWindow.add(plantsNum);
+        JLabel dryPlantsNum = new JLabel(numDryPlants);
+        dryPlantsNum.setBounds(70, 150, 300, 50);
+        statsWindow.add(dryPlantsNum);
+        statsWindow.setSize(400, 300);
         mainPage.add(b2);
     }
 
@@ -420,13 +448,10 @@ public class GardenApp extends JFrame {
     private void addSaveAndLoadUIButton() {
         JButton b4 = new JButton("Save/Load");
         b4.setBounds(alignX, 150, btnWidth, btnHeight);
-        b4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jf.setContentPane(saveAndLoadPanel);
-                jf.repaint();
-                jf.revalidate();
-            }
+        b4.addActionListener(e -> {
+            jf.setContentPane(saveAndLoadPanel);
+            jf.repaint();
+            jf.revalidate();
         });
         mainPage.add(b4);
     }
@@ -435,26 +460,20 @@ public class GardenApp extends JFrame {
         JButton b3 = new JButton("Watering Way-Finder");
         b3.setBounds(alignX, 200, btnWidth, btnHeight);
         mainPage.add(b3);
-        b3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jf.setContentPane(waterWayFinderPage);
-                jf.repaint();
-                jf.revalidate();
-            }
+        b3.addActionListener(e -> {
+            jf.setContentPane(waterWayFinderPage);
+            jf.repaint();
+            jf.revalidate();
         });
     }
 
     private JButton createBackButton() {
         JButton backButton = new JButton("Back to Main Menu");
         backButton.setSize(btnWidth, btnHeight);
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                jf.setContentPane(mainPage);
-                repaint();
-                revalidate();
-            }
+        backButton.addActionListener(e -> {
+            jf.setContentPane(mainPage);
+            repaint();
+            revalidate();
         });
         return backButton;
     }
@@ -552,7 +571,7 @@ public class GardenApp extends JFrame {
     //        if unable to do so, print out message and do nothing
     public String saveGarden() {
         try {
-            writerJson = new WriterJson(SOURCE_JSON);
+            WriterJson writerJson = new WriterJson(SOURCE_JSON);
             writerJson.open();
             writerJson.writeToJson(myGarden);
             writerJson.close();

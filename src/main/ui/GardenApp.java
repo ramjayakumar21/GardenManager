@@ -12,8 +12,6 @@ import ui.renderers.PlantRenderer;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -21,9 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
-// provides the console based ui for using the Garden Manager application
-//       this class was made based of the TellerApp class from the TellerApp Project:
+// provides the graphics based ui for using the Garden Manager application
+//       this class was originally based off the TellerApp class from the TellerApp Project:
 //       https://github.students.cs.ubc.ca/CPSC210/TellerApp
 public class GardenApp extends JFrame {
     private Garden myGarden;
@@ -88,7 +85,91 @@ public class GardenApp extends JFrame {
 
         waterWayFinderPage = new JPanel();
         waterWayFinderPage.setLayout(null);
+        waterWayFinderPage.setBackground(new Color(0x5D5DE0));
         makeWaterPage();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: initializes main page  and adds buttons to main page for garden app
+    private void initializeMainPageButtons() {
+        mainPage = new JPanel();
+        mainPage.setLayout(null);
+        mainPage.setBackground(new Color(0x84D384));
+        jf.setContentPane(mainPage);
+
+        try {
+            BufferedImage img = ImageIO.read(new File("data/img/plant.png"));
+            JLabel imgLoc = new JLabel(new ImageIcon(img));
+            imgLoc.setBounds(0,0,300,HEIGHT);
+            jf.add(imgLoc);
+        } catch (IOException e) {
+            // do nothing -- when unable to get image
+        }
+        addViewPlantBedsButton();
+        addGardenStatsButton();
+        addWateringButton();
+        addSaveAndLoadButton();
+        createBackButton();
+
+        JButton quitButton = new JButton("Quit Program");
+        quitButton.addActionListener(e -> saveGardenDialog());
+        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
+        mainPage.add(quitButton);
+    }
+
+    // MODIFIES: this, mainPage
+    // EFFECTS: adds button to view plantBedPage from main page
+    public void addViewPlantBedsButton() {
+        JButton b1 = new JButton("View/Modify Plant Beds");
+        b1.setBounds(alignX, 50, btnWidth, btnHeight);
+        b1.addActionListener(e -> {
+            makePlantBedPage();
+            jf.setContentPane(plantBedPage);
+            jf.repaint();
+            jf.revalidate();
+        });
+        mainPage.add(b1);
+    }
+
+    // MODIFIES: this, mainPage
+    // EFFECTS: adds garden stats button to main page
+    public void addGardenStatsButton() {
+        JButton b2 = new JButton("View Garden Stats");
+        statsDialog = new JDialog(jf, "Garden Stats", true);
+        statsDialog.setLayout(null);
+        b2.setBounds(alignX, 100, btnWidth, btnHeight);
+        b2.addActionListener(e -> {
+                    setGardenStats();
+                    statsDialog.setVisible(true);
+                }
+        );
+        mainPage.add(b2);
+    }
+
+    // MODIFIES: this, mainPage
+    // EFFECTS: adds save and load button to main page
+    private void addSaveAndLoadButton() {
+        JButton b4 = new JButton("Save/Load");
+        b4.setBounds(alignX, 150, btnWidth, btnHeight);
+        b4.addActionListener(e -> {
+            jf.setContentPane(saveAndLoadPage);
+            jf.repaint();
+            jf.revalidate();
+        });
+        mainPage.add(b4);
+    }
+
+    // MODIFIES: this, mainPage
+    // EFFECTS: adds watering way-finder button to main page
+    private void addWateringButton() {
+        JButton b3 = new JButton("Watering Way-Finder");
+        b3.setBounds(alignX, 200, btnWidth, btnHeight);
+        b3.addActionListener(e -> {
+            jf.setContentPane(waterWayFinderPage);
+            jf.repaint();
+            jf.revalidate();
+        });
+        mainPage.add(b3);
     }
 
     // MODIFIES: waterWayFinderPage
@@ -96,6 +177,7 @@ public class GardenApp extends JFrame {
     public void makeWaterPage() {
         JButton nextButton = new JButton("Begin WaterWayFinder");
         nextButton.setBounds(150, 150, btnWidth * 2, btnHeight * 2);
+        nextButton.setIcon(createImageIcon("data/img/watering.png","",100,100));
 
         nextButton.addActionListener(e -> {
             JToggleButton jb = new JToggleButton("Water and go to next Plant");
@@ -163,7 +245,7 @@ public class GardenApp extends JFrame {
                 // do nothing -- happens when trying to go to plant without bed selected
             }
         });
-        addPlantBedButtons(pbList, goToPlant);
+        addPBPageButtons(pbList, goToPlant);
     }
 
     // EFFECTS: returns a label for plant bed info on the plantBedPage
@@ -187,8 +269,8 @@ public class GardenApp extends JFrame {
     // MODIFIES: plantBedPage, pbList, goToPlant
     // EFFECTS: adds list of plant-beds in garden and popup menu for deleting plant beds
     //          also adds buttons to access selected plantBed and go back to menu
-    public void addPlantBedButtons(JList<PlantBed> pbList, JButton goToPlant) {
-        addDeletePopup(pbList);
+    public void addPBPageButtons(JList<PlantBed> pbList, JButton goToPlant) {
+        initDeletePBPopup(pbList);
         newPlantBedButton(pbList);
         goToPlant.setBounds(alignX, 100, btnWidth, btnHeight);
         plantBedPage.add(goToPlant);
@@ -200,7 +282,7 @@ public class GardenApp extends JFrame {
     // MODIFIES: plantBedPage, pbList, goToPlant
     // EFFECTS: adds list of plant-beds in garden and popup menu for deleting plant beds
     //          also adds buttons to access selected plantBed and go back to menu
-    public void addDeletePopup(JList jlist) {
+    public void initDeletePBPopup(JList jlist) {
         JPopupMenu edit = new JPopupMenu("Edit PlantBeds");
         jlist.setComponentPopupMenu(edit);
         JMenuItem delete = new JMenuItem("Delete");
@@ -373,35 +455,7 @@ public class GardenApp extends JFrame {
         jtp.addTab("LifeStage", ageTab);
     }
 
-    // MODIFIES: this
-    // EFFECTS: initializes main page and adds buttons to main page for garden app
-    private void initializeMainPageButtons() {
-        mainPage = new JPanel();
-        mainPage.setLayout(null);
-        mainPage.setBackground(new Color(0x84D384));
-        jf.setContentPane(mainPage);
 
-        try {
-            BufferedImage img = ImageIO.read(new File("data/img/plant.png"));
-            JLabel imgLoc = new JLabel(new ImageIcon(img));
-            imgLoc.setBounds(0,0,300,HEIGHT);
-            jf.add(imgLoc);
-        } catch (IOException e) {
-            // do nothing -- when unable to get image
-        }
-        addViewPlantBedsButton();
-        addGardenStatsButton();
-        addWateringButton();
-        addSaveAndLoadButton();
-        createBackButton();
-
-        JButton quitButton = new JButton("Quit Program");
-        quitButton.addActionListener(e -> {
-            saveGardenDialog();
-        });
-        quitButton.setBounds(alignX, 300, btnWidth, btnHeight);
-        mainPage.add(quitButton);
-    }
 
 
     // MODIFIES: this
@@ -437,51 +491,6 @@ public class GardenApp extends JFrame {
         jd.setVisible(true);
     }
 
-    // MODIFIES: this, mainPage
-    // EFFECTS: adds button to view plantBedPage from main page
-    public void addViewPlantBedsButton() {
-        JButton b1 = new JButton("View/Modify Plant Beds");
-        b1.setBounds(alignX, 50, btnWidth, btnHeight);
-        b1.addActionListener(e -> {
-            makePlantBedPage();
-            jf.setContentPane(plantBedPage);
-            jf.repaint();
-            jf.revalidate();
-        });
-        mainPage.add(b1);
-    }
-
-    // MODIFIES: this, mainPage
-    // EFFECTS: adds garden stats button to main page
-    public void addGardenStatsButton() {
-        JButton b2 = new JButton("View Garden Stats");
-        statsDialog = new JDialog(jf, "Garden Stats", true);
-        statsDialog.setLayout(null);
-        b2.setBounds(alignX, 100, btnWidth, btnHeight);
-        b2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                setGardenStats();
-                statsDialog.setVisible(true);
-                }
-            }
-        );
-        mainPage.add(b2);
-    }
-
-    // MODIFIES: this, mainPage
-    // EFFECTS: adds save and load button to main page
-    private void addSaveAndLoadButton() {
-        JButton b4 = new JButton("Save/Load");
-        b4.setBounds(alignX, 150, btnWidth, btnHeight);
-        b4.addActionListener(e -> {
-            jf.setContentPane(saveAndLoadPage);
-            jf.repaint();
-            jf.revalidate();
-        });
-        mainPage.add(b4);
-    }
-
     // MODIFIES: this, statsDialog
     // EFFECTS: updates statsDialog popup with number of plant-beds, plants and dry plants
     private void setGardenStats() {
@@ -514,20 +523,6 @@ public class GardenApp extends JFrame {
         return count;
     }
 
-
-    // MODIFIES: this, mainPage
-    // EFFECTS: adds watering way-finder button to main page
-    private void addWateringButton() {
-        JButton b3 = new JButton("Watering Way-Finder");
-        b3.setBounds(alignX, 200, btnWidth, btnHeight);
-        mainPage.add(b3);
-        b3.addActionListener(e -> {
-            jf.setContentPane(waterWayFinderPage);
-            jf.repaint();
-            jf.revalidate();
-        });
-    }
-
     // EFFECTS: creates new back button that returns to main page on click
     //          and then returns the button
     private JButton createBackButton() {
@@ -538,6 +533,7 @@ public class GardenApp extends JFrame {
             repaint();
             revalidate();
         });
+        backButton.setBackground(new Color(0xE78E8E));
         return backButton;
     }
 
@@ -603,8 +599,8 @@ public class GardenApp extends JFrame {
         myGarden = new Garden(testPlantBeds);
     }
 
-    //COPIED FROM: https://docs.oracle.com/javase/tutorial/uiswing/components/icon.html
-    /** Returns an ImageIcon, or null if the path was invalid. */
+    // SOURCE : https://docs.oracle.com/javase/tutorial/uiswing/components/icon.html
+    // EFFECTS: Returns an ImageIcon from given path, or null if the path was invalid.
     protected ImageIcon createImageIcon(String path,
                                         String description, int width, int height) {
         try {

@@ -296,7 +296,7 @@ public class GardenApp extends JFrame {
         plantBedPage.add(edit);
     }
 
-    // MODIFIES: allPlantBeds
+    // MODIFIES: this, allPlantBeds
     // EFFECTS: shows dialog and creates new plant bed with given name
     public void newPlantBedButton(JList allPlantBeds) {
         JButton addNewPB = new JButton("Add new plant-bed");
@@ -333,7 +333,7 @@ public class GardenApp extends JFrame {
         return pbList;
     }
 
-    // MODIFIES: plants, pb, window
+    // MODIFIES: this, plants, pb, window
     // EFFECTS: creates plant dialog window from selected plant bed pb
     public void updatePlantWindow(JList plants, PlantBed pb, JDialog window) {
         PlantRenderer pr = new PlantRenderer();
@@ -350,7 +350,7 @@ public class GardenApp extends JFrame {
         window.add(plantInfo);
     }
 
-    // MODIFIES: plants, pb, window, plantInfo
+    // MODIFIES: this, plants, pb, window, plantInfo
     // EFFECTS: creates popup window for given plants to allow deleting and watering of plants
     public JPopupMenu getPlantsPopupMenu(JList plants, PlantBed pb, JDialog window, JLabel plantInfo) {
         plants.addListSelectionListener(e -> makePlantInfoText(plants, window, plantInfo));
@@ -377,7 +377,7 @@ public class GardenApp extends JFrame {
         return editPlants;
     }
 
-    // MODIFIES: plants
+    // MODIFIES: this, plants, window
     // EFFECTS: on right click of a plant in JList plants, lets user water a plant
     //          and shows window with response string
     private void waterPlantPopup(JList plants, PlantBed pb, JDialog window) {
@@ -395,7 +395,7 @@ public class GardenApp extends JFrame {
     private void makePlantInfoText(JList plants, JDialog window, JLabel plantInfo) {
         Plant p = (Plant) plants.getSelectedValue();
         if (p == null) {
-            return;
+            return; // don't show any text if no plant selected
         }
         plantInfo.setText("<html>Name: " + p.getName() + "<br/>Type: " + p.getPlantType()
                 + " <br/>Watering Cycle: " + p.getWaterCycle() + " <br/> Needs Water?: " + p.getDry()
@@ -478,7 +478,7 @@ public class GardenApp extends JFrame {
         saveQuitDialog.setVisible(true);
     }
 
-    // MODIFIES: this
+    // MODIFIES: this, quit
     // EFFECTS: attempts to save garden in current state and prints result string
     private void saveAndQuitResult(JButton quit) {
         JDialog jd = new JDialog();
@@ -555,7 +555,7 @@ public class GardenApp extends JFrame {
     }
 
 
-    //MODIFIES: myGarden
+    //MODIFIES: this
     //EFFECTS: retrieves garden from JSON file, replaces current garden with it, and returns success string
     //         if unable to do so, return error string
     public String retrieveGarden() {

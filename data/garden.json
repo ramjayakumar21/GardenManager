@@ -1,31 +1,4 @@
-{"plantBedArrayList": [
-    {
-        "plantArrayList": [
-            {
-                "lifeStage": "Mature",
-                "name": "Rose",
-                "isDry": true,
-                "plantType": "Bulb",
-                "waterCycle": "Weekly"
-            },
-            {
-                "lifeStage": "Young",
-                "name": "Carrot",
-                "isDry": true,
-                "plantType": "Vegetable",
-                "waterCycle": "Weekly"
-            }
-        ],
-        "name": "Bed 1"
-    },
-    {
-        "plantArrayList": [{
-            "lifeStage": "Sprout",
-            "name": "Day-lily",
-            "isDry": true,
-            "plantType": "Perennial",
-            "waterCycle": "Daily"
-        }],
-        "name": "Bed 2"
-    }
-]}
+{"plantBedArrayList": [{
+    "plantArrayList": [],
+    "name": "DHAUSD"
+}]}

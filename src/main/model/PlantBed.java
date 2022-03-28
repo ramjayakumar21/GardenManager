@@ -34,33 +34,40 @@ public class PlantBed implements Writable {
     public void addPlant(String name, String waterCycle, String plantType, String life) {
         Plant p = new Plant(name, waterCycle, plantType, life);
         plantArrayList.add(p);
+        EventLog.getInstance().logEvent(new Event("Added plant " + name + " to plant bed "
+                + this.name + "."));
     }
 
     //MODIFIES: this
     //EFFECTS: adds given plant p to plant list
     public void addPlant(Plant p) {
         plantArrayList.add(p);
+        EventLog.getInstance().logEvent(new
+                Event("Added plant " + p.getName() + " to plant bed " + this.name + "."));
     }
 
 
     //MODIFIES: this
-    //EFFECTS: if plant with index n is in plants, check if isDry = true
+    //EFFECTS: if plant with is contained in plantArrayList, check if isDry = true
     //              if true, change to false and return true
     //         if false or in all other cases, return false
-    public boolean waterPlant(int n) {
-        if (0 <= n && (plantArrayList.size() - 1) >= n) {
-            return plantArrayList.get(n).water();
+    public boolean waterPlant(Plant p) {
+        if (plantArrayList.contains(p)) {
+            EventLog.getInstance().logEvent(new Event("Watered plant "
+                    + p.getName() + " in plant bed " + this.name  + "."));
+            return p.water();
         }
         return false;
     }
 
     //MODIFIES: this
-    //EFFECTS: if plant exists at index n, remove it and return true
+    //EFFECTS: if plant is contained in plantArrayList, remove it and return true
     //         else return false
-    public boolean uprootPlant(int n) {
-        if (0 <= n && (plantArrayList.size() - 1) >= n) {
-            plantArrayList.remove(n);
-            return true;
+    public boolean uprootPlant(Plant p) {
+        if (plantArrayList.contains(p)) {
+            EventLog.getInstance().logEvent(new Event("Removed plant "
+                    + p.getName() + " from plant bed " + this.name  + "."));
+            return plantArrayList.remove(p);
         }
         return false;
     }

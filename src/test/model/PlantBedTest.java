@@ -43,19 +43,18 @@ public class PlantBedTest {
 
     @Test
     public void uprootPlantTest() {
-        assertTrue(testBed.uprootPlant(0));
+        assertTrue(testBed.uprootPlant(p1));
         assertEquals(2,testBed.getPlantArrayList().size());
         assertEquals(p2,testBed.getPlantArrayList().get(0));
         assertEquals(p3,testBed.getPlantArrayList().get(1));
-        assertFalse(testBed.uprootPlant(3));
-        assertFalse(testBed.uprootPlant(-1));
+        assertFalse(testBed.uprootPlant(new Plant("fake", "plant", "2", "test")));
     }
 
     @Test
     public void addAndRemoveTest() {
         Plant p4 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
         testBed.addPlant(p4);
-        assertTrue(testBed.uprootPlant(2));
+        assertTrue(testBed.uprootPlant(p3));
         assertEquals(3,testBed.getPlantArrayList().size());
         assertEquals(p1,testBed.getPlantArrayList().get(0));
         assertEquals(p2,testBed.getPlantArrayList().get(1));
@@ -64,11 +63,10 @@ public class PlantBedTest {
 
     @Test
     public void waterPlantTest() {
-        assertTrue(testBed.waterPlant(2));
+        assertTrue(testBed.waterPlant(p3));
         assertFalse(testBed.getPlantArrayList().get(2).getDry());
-        assertFalse(testBed.waterPlant(2));
-        assertFalse(testBed.waterPlant(5));
-        assertFalse(testBed.waterPlant(-3));
+        assertFalse(testBed.waterPlant(
+                new Plant("Tulip", "Daily", "Biennial", "Mature")));
     }
 
 

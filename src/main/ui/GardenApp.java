@@ -1,6 +1,8 @@
 package ui;
 
 
+import model.Event;
+import model.EventLog;
 import model.Garden;
 import model.Plant;
 import model.PlantBed;
@@ -12,12 +14,15 @@ import ui.renderers.PlantRenderer;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 // provides the graphics based ui for using the Garden Manager application
 //       this class was originally based off the TellerApp class from the TellerApp Project:
@@ -289,7 +294,7 @@ public class GardenApp extends JFrame {
         edit.add(delete);
         delete.addActionListener(e -> {
             PlantBed selectedPB = (PlantBed) jlist.getSelectedValue();
-            myGarden.getPlantBedArrayList().remove(selectedPB);
+            myGarden.removePlantBed(selectedPB);
             jlist.clearSelection();
             jlist.setListData(myGarden.getPlantBedArrayList().toArray(new PlantBed[0]));
         });
@@ -364,7 +369,7 @@ public class GardenApp extends JFrame {
         editPlants.add(delete);
         delete.addActionListener(e -> {
             Plant selectedPlant = (Plant) plants.getSelectedValue();
-            pb.getPlantArrayList().remove(selectedPlant);
+            pb.uprootPlant(selectedPlant);
             plants.setListData(pb.getPlantArrayList().toArray(new Plant[0]));
             plantInfo.setText("");
             plants.clearSelection();
@@ -381,8 +386,8 @@ public class GardenApp extends JFrame {
     // EFFECTS: on right click of a plant in JList plants, lets user water a plant
     //          and shows window with response string
     private void waterPlantPopup(JList plants, PlantBed pb, JDialog window) {
-        Plant selectedPlant = (Plant) plants.getSelectedValue();
-        if (pb.waterPlant(pb.getPlantArrayList().indexOf(selectedPlant))) {
+        Plant selectedPlant = (Plant)plants.getSelectedValue();
+        if (pb.waterPlant(selectedPlant)) {
             JOptionPane.showMessageDialog(window, "Successfully Watered!");
         } else {
             JOptionPane.showMessageDialog(window,
@@ -467,7 +472,13 @@ public class GardenApp extends JFrame {
         saveQuitDialog.add(new JLabel("Would you like to save before quitting?"));
         JButton yesBtn = new JButton("Yes");
         JButton quitBtn = new JButton("No");
-        quitBtn.addActionListener(e1 -> System.exit(0));
+        quitBtn.addActionListener(e -> {
+            for (Iterator<Event> it = EventLog.getInstance().iterator(); it.hasNext(); ) {
+                Event i = it.next();
+                System.out.println(i.toString());
+            }
+            System.exit(0);
+        });
         yesBtn.addActionListener(e1 -> {
             saveAndQuitResult(quitBtn);
         });

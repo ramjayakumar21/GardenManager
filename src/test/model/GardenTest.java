@@ -7,16 +7,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GardenTest {
     Garden testGarden;
+    private Plant p1;
+    private Plant p2;
+    private Plant p3;
+    private PlantBed bed1;
+    private PlantBed bed2;
 
     @BeforeEach
     public void runBefore() {
-        Plant p1 = new Plant("Rose","Weekly","Bulb","Mature");
-        Plant p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
-        Plant p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
-        PlantBed bed1 = new PlantBed("Bed 1");
+        p1 = new Plant("Rose","Weekly","Bulb","Mature");
+        p2 = new Plant("Carrot", "Weekly", "Vegetable", "Young");
+        p3 = new Plant("Day-lily", "Daily", "Perennial", "Sprout");
+        bed1 = new PlantBed("Bed 1");
         bed1.addPlant(p1);
         bed1.addPlant(p2);
-        PlantBed bed2 = new PlantBed("Bed 2");
+        bed2 = new PlantBed("Bed 2");
         bed2.addPlant(p3);
         ArrayList<PlantBed> testPlantBeds = new ArrayList<>();
         testPlantBeds.add(bed1);
@@ -45,7 +50,7 @@ public class GardenTest {
     @Test
     public void getNumOfPlantBedsTest() {
         assertEquals(3,testGarden.getNumOfPlants());
-        assertTrue(testGarden.getPlantBedByIndex(0).uprootPlant(0));
+        assertTrue(testGarden.getPlantBedByIndex(0).uprootPlant(p1));
         assertEquals(2,testGarden.getNumOfPlants());
     }
 
@@ -61,12 +66,11 @@ public class GardenTest {
         PlantBed pb1 = new PlantBed("Fruit Plants");
         testGarden.addPlantBed(pb1);
         assertEquals(3,testGarden.getNumOfPlantBeds());
-        assertTrue(testGarden.removePlantBed(2));
+        assertTrue(testGarden.removePlantBed(pb1));
         assertEquals(2,testGarden.getPlantBedArrayList().size());
-        assertTrue(testGarden.removePlantBed(1));
+        assertTrue(testGarden.removePlantBed(bed1));
         assertEquals(1,testGarden.getPlantBedArrayList().size());
-        assertFalse(testGarden.removePlantBed(10));
-        assertFalse(testGarden.removePlantBed(-1));
+        assertFalse(testGarden.removePlantBed(new PlantBed("BEd 1")));
     }
 
 }

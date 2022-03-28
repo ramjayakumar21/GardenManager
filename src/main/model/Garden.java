@@ -24,16 +24,17 @@ public class Garden implements Writable {
     //MODIFIES: this
     //EFFECTS: adds given PlantBed p to plantBedArrayList
     public void addPlantBed(PlantBed pb) {
+        EventLog.getInstance().logEvent(new Event("Added plant-bed " + pb.getName() + " to garden."));
         plantBedArrayList.add(pb);
     }
 
     //MODIFIES: this
     //EFFECT: if plant bed with index i exists, removes it and returns true
     //        else return false
-    public boolean removePlantBed(int x) {
-        if (x >= 0 && x <= (plantBedArrayList.size() - 1)) {
-            plantBedArrayList.remove(x);
-            return true;
+    public boolean removePlantBed(PlantBed pb) {
+        if (plantBedArrayList.contains(pb)) {
+            EventLog.getInstance().logEvent(new Event("Removed plant-bed " + pb.getName() + " from garden."));
+            return plantBedArrayList.remove(pb);
         }
         return false;
     }
@@ -44,11 +45,14 @@ public class Garden implements Writable {
         for (PlantBed pb: plantBedArrayList) {
             total += pb.getPlantArrayList().size();
         }
+        EventLog.getInstance().logEvent(new Event("Counted " + total + " plants from garden."));
         return total;
     }
 
     //EFFECTS: returns total number of plant beds in garden
     public int getNumOfPlantBeds() {
+        EventLog.getInstance().logEvent(new Event("Counted " + plantBedArrayList.size()
+                + " plants from garden."));
         return plantBedArrayList.size();
     }
 

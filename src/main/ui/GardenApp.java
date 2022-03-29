@@ -31,6 +31,7 @@ public class GardenApp extends JFrame {
     private Garden myGarden;
     private static final String SOURCE_JSON = "./data/garden.json";
     private ReaderJson readerJson;
+    private WriterJson writerJson;
 
     private JFrame jf;
     private static final int WIDTH = 700;
@@ -47,6 +48,7 @@ public class GardenApp extends JFrame {
 
     //EFFECTS: calls main menu method to initialize the GUI
     public GardenApp() {
+        loadStartUp();
         mainMenu();
     }
 
@@ -56,7 +58,7 @@ public class GardenApp extends JFrame {
     public void mainMenu() {
         jf = new JFrame("Garden Manager");
 
-        loadStartUp();
+
         initializeGUI();
 
         jf.setResizable(false);
@@ -583,7 +585,7 @@ public class GardenApp extends JFrame {
     //        if unable to do so, return error string
     public String saveGarden() {
         try {
-            WriterJson writerJson = new WriterJson(SOURCE_JSON);
+            writerJson = new WriterJson(SOURCE_JSON);
             writerJson.open();
             writerJson.writeToJson(myGarden);
             writerJson.close();

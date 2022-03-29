@@ -21,3 +21,28 @@ With this application, I could have a centralized space to record all the plants
 - As a user, I want to be able to load a save of my garden to go back to an older state. 
 - As a user, I want to be able to save my garden when quitting the program and load it back on the next startup.
 
+
+## Phase 4: Task 2
+
+Mon Mar 28 18:21:05 PDT 2022 
+Added plant 'Rose' to plant bed 'Bed 1'. <-- INITIALIZATION OF DATA STARTS
+Mon Mar 28 18:21:05 PDT 2022
+Added plant 'Carrot' to plant bed 'Bed 1'.
+Mon Mar 28 18:21:05 PDT 2022
+Added plant-bed 'Bed 1' to garden.
+Mon Mar 28 18:21:05 PDT 2022
+Added plant 'Day-lily' to plant bed 'Bed 2'.
+Mon Mar 28 18:21:05 PDT 2022
+Added plant-bed 'Bed 2' to garden.
+Mon Mar 28 18:21:11 PDT 2022
+Removed plant-bed 'Bed 2' from garden. <-- USER MANIPULATION OF DATA STARTS
+Mon Mar 28 18:21:19 PDT 2022
+Watered plant 'Rose' in plant bed 'Bed 1'.
+Mon Mar 28 18:21:32 PDT 2022
+Removed plant 'Carrot' from plant bed 'Bed 1'.
+
+## Phase 4: Task 3
+
+If I could have done some refactoring, I would have attempted to reduce some redundancy by making an abstract class for
+both the plant and plantbeds to extend as they have somewhat similar functionality. Also, as it stands my GardenApp class
+is a bit bloated so making more classes to improve cohesion would also be a good choice.

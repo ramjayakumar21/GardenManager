@@ -24,7 +24,7 @@ public class Garden implements Writable {
     //MODIFIES: this
     //EFFECTS: adds given PlantBed p to plantBedArrayList
     public void addPlantBed(PlantBed pb) {
-        EventLog.getInstance().logEvent(new Event("Added plant-bed " + pb.getName() + " to garden."));
+        EventLog.getInstance().logEvent(new Event("Added plant-bed '" + pb.getName() + "' to garden."));
         plantBedArrayList.add(pb);
     }
 
@@ -33,7 +33,8 @@ public class Garden implements Writable {
     //        else return false
     public boolean removePlantBed(PlantBed pb) {
         if (plantBedArrayList.contains(pb)) {
-            EventLog.getInstance().logEvent(new Event("Removed plant-bed " + pb.getName() + " from garden."));
+            EventLog.getInstance().logEvent(new Event("Removed plant-bed '"
+                    + pb.getName() + "' from garden."));
             return plantBedArrayList.remove(pb);
         }
         return false;
@@ -52,7 +53,7 @@ public class Garden implements Writable {
     //EFFECTS: returns total number of plant beds in garden
     public int getNumOfPlantBeds() {
         EventLog.getInstance().logEvent(new Event("Counted " + plantBedArrayList.size()
-                + " plants from garden."));
+                + " plantbeds from garden."));
         return plantBedArrayList.size();
     }
 

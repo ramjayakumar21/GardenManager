@@ -1,5 +1,7 @@
 package persistence;
 
+import model.Event;
+import model.EventLog;
 import model.Garden;
 import org.json.JSONObject;
 
@@ -24,6 +26,7 @@ public class WriterJson {
     //          throws FileNotFoundException if destination file can't be opened
     //copied from JsonSerializationDemo
     public void open() throws FileNotFoundException {
+        EventLog.getInstance().logEvent(new Event("Saved garden to " + destinationPath + "."));
         printWriter = new PrintWriter(destinationPath);
     }
 

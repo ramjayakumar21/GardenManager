@@ -1,8 +1,6 @@
 package persistence;
 
-import model.Garden;
-import model.Plant;
-import model.PlantBed;
+import model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -27,6 +25,7 @@ public class ReaderJson {
     //EFFECTS: reads source string from instance and produces Garden object
     //         throws IOException if there is an error while reading the files
     public Garden readSource() throws IOException {
+        EventLog.getInstance().logEvent(new Event("Retrieved garden from " + sourcePath + "."));
         String jsonData = readString(sourcePath);
         return parseGarden(new JSONObject(jsonData));
     }

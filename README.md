@@ -24,25 +24,33 @@ With this application, I could have a centralized space to record all the plants
 
 ## Phase 4: Task 2
 
-Mon Mar 28 18:21:05 PDT 2022 
-Added plant 'Rose' to plant bed 'Bed 1'. <-- INITIALIZATION OF DATA STARTS
-Mon Mar 28 18:21:05 PDT 2022
+-- INITIALIZATION OF DATA ON STARTUP --
+Thu Mar 31 23:16:44 PDT 2022 
+Added plant 'Rose' to plant bed 'Bed 1'.
+Thu Mar 31 23:16:44 PDT 2022
 Added plant 'Carrot' to plant bed 'Bed 1'.
-Mon Mar 28 18:21:05 PDT 2022
+Thu Mar 31 23:16:44 PDT 2022
 Added plant-bed 'Bed 1' to garden.
-Mon Mar 28 18:21:05 PDT 2022
+Thu Mar 31 23:16:44 PDT 2022
 Added plant 'Day-lily' to plant bed 'Bed 2'.
-Mon Mar 28 18:21:05 PDT 2022
+Thu Mar 31 23:16:44 PDT 2022
 Added plant-bed 'Bed 2' to garden.
-Mon Mar 28 18:21:11 PDT 2022
-Removed plant-bed 'Bed 2' from garden. <-- USER MANIPULATION OF DATA STARTS
-Mon Mar 28 18:21:19 PDT 2022
-Watered plant 'Rose' in plant bed 'Bed 1'.
-Mon Mar 28 18:21:32 PDT 2022
+-- MODIFYING X'S AND Y'S --
+Thu Mar 31 23:16:55 PDT 2022
+Removed plant-bed 'Bed 2' from garden.
+Thu Mar 31 23:17:04 PDT 2022
+Added plant-bed 'Fruits' to garden.
+Thu Mar 31 23:17:15 PDT 2022
+Added plant 'Apple' to plant bed Fruits.
+Thu Mar 31 23:17:25 PDT 2022
 Removed plant 'Carrot' from plant bed 'Bed 1'.
+Thu Mar 31 23:17:31 PDT 2022
+Watered plant 'Apple' in plant bed 'Fruits'.
 
 ## Phase 4: Task 3
 
 If I could have done some refactoring, I would have attempted to reduce some redundancy by making an abstract class for
-both the plant and plantbeds to extend as they have somewhat similar functionality. Also, as it stands my GardenApp class
-is a bit bloated so making more classes to improve cohesion would also be a good choice.
+both the plant and plant-beds to extend as they have similar functionality. I could have used the
+Composite Pattern from class, as my program is similar to files and folders (plants and plant-beds).
+Also, as it stands my GardenApp class is a bit bloated, so I would try to dilute it into 
+more classes to improve cohesion would also be a good choice.

@@ -68,6 +68,7 @@ public class GardenApp extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 saveGardenDialog();
+
             }
         });
     }
@@ -473,9 +474,8 @@ public class GardenApp extends JFrame {
         JButton yesBtn = new JButton("Yes");
         JButton quitBtn = new JButton("No");
         quitBtn.addActionListener(e -> {
-            for (Iterator<Event> it = EventLog.getInstance().iterator(); it.hasNext(); ) {
-                Event i = it.next();
-                System.out.println(i.toString());
+            for (Event event : EventLog.getInstance()) {
+                System.out.println(event.toString());
             }
             System.exit(0);
         });

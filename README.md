@@ -24,8 +24,8 @@ With this application, I could have a centralized space to record all the plants
 
 ## Phase 4: Task 2
 
--- INITIALIZATION OF DATA ON STARTUP --
-- Thu Mar 31 23:16:44 PDT 2022 
+-- INITIALIZING DATA ON STARTUP
+- Thu Mar 31 23:16:44 PDT 2022
 - Added plant 'Rose' to plant bed 'Bed 1'.
 - Thu Mar 31 23:16:44 PDT 2022
 - Added plant 'Carrot' to plant bed 'Bed 1'.
@@ -51,8 +51,8 @@ With this application, I could have a centralized space to record all the plants
 
 ## Phase 4: Task 3
 
-If I could have done some refactoring, I would have attempted to reduce some redundancy by making an abstract class for
-both the plant and plant-beds to extend as they have similar functionality. I could have used the
-Composite Pattern from class, as my program is similar to files and folders (plants and plant-beds).
-Also, as it stands my GardenApp class is a bit bloated, so I would try to dilute it into 
-more classes to improve cohesion would also be a good choice.
+If I could have done some refactoring, I would have attempted to reduce some redundancy by making an abstract class for 
+both the plant and plant-beds to extend as they have similar functionality. 
+I could have used the Composite Pattern from class, as my program is similar to files and folders 
+(plants and plant-beds). Also, as it stands my GardenApp class is a bit bloated, so I would try to dilute it into more 
+classes to improve cohesion would also be a good choice.

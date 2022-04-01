@@ -25,27 +25,29 @@ With this application, I could have a centralized space to record all the plants
 ## Phase 4: Task 2
 
 -- INITIALIZATION OF DATA ON STARTUP --
-Thu Mar 31 23:16:44 PDT 2022 
-Added plant 'Rose' to plant bed 'Bed 1'.
-Thu Mar 31 23:16:44 PDT 2022
-Added plant 'Carrot' to plant bed 'Bed 1'.
-Thu Mar 31 23:16:44 PDT 2022
-Added plant-bed 'Bed 1' to garden.
-Thu Mar 31 23:16:44 PDT 2022
-Added plant 'Day-lily' to plant bed 'Bed 2'.
-Thu Mar 31 23:16:44 PDT 2022
-Added plant-bed 'Bed 2' to garden.
+- Thu Mar 31 23:16:44 PDT 2022 
+- Added plant 'Rose' to plant bed 'Bed 1'.
+- Thu Mar 31 23:16:44 PDT 2022
+- Added plant 'Carrot' to plant bed 'Bed 1'.
+- Thu Mar 31 23:16:44 PDT 2022
+- Added plant-bed 'Bed 1' to garden.
+- Thu Mar 31 23:16:44 PDT 2022
+- Added plant 'Day-lily' to plant bed 'Bed 2'.
+- Thu Mar 31 23:16:44 PDT 2022
+- Added plant-bed 'Bed 2' to garden.
+
 -- MODIFYING X'S AND Y'S --
-Thu Mar 31 23:16:55 PDT 2022
-Removed plant-bed 'Bed 2' from garden.
-Thu Mar 31 23:17:04 PDT 2022
-Added plant-bed 'Fruits' to garden.
-Thu Mar 31 23:17:15 PDT 2022
-Added plant 'Apple' to plant bed Fruits.
-Thu Mar 31 23:17:25 PDT 2022
-Removed plant 'Carrot' from plant bed 'Bed 1'.
-Thu Mar 31 23:17:31 PDT 2022
-Watered plant 'Apple' in plant bed 'Fruits'.
+
+- Thu Mar 31 23:16:55 PDT 2022
+- Removed plant-bed 'Bed 2' from garden.
+- Thu Mar 31 23:17:04 PDT 2022
+- Added plant-bed 'Fruits' to garden.
+- Thu Mar 31 23:17:15 PDT 2022
+- Added plant 'Apple' to plant bed Fruits.
+- Thu Mar 31 23:17:25 PDT 2022
+- Removed plant 'Carrot' from plant bed 'Bed 1'.
+- Thu Mar 31 23:17:31 PDT 2022
+- Watered plant 'Apple' in plant bed 'Fruits'.
 
 ## Phase 4: Task 3
 
